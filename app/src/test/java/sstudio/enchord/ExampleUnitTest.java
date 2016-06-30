@@ -1,4 +1,4 @@
-package sstudio.gnote;
+package sstudio.enchord;
 
 import org.junit.Test;
 

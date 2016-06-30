@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="sstudio.gnote.MainActivity"
+    tools:context="sstudio.enchord.MainActivity"
     android:orientation="horizontal"
     android:background="@color/colorBackground">
 
@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="50">
-        <sstudio.gnote.FretboardView
+        <sstudio.enchord.FretboardView
             android:id="@+id/fretboard"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
