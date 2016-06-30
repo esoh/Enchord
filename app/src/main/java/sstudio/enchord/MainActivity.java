@@ -1,4 +1,4 @@
-package sstudio.gnote;
+package sstudio.enchord;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
