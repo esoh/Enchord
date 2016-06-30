@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorFretboard">#616161</color>
+    <color name="colorBackground">#EEEEEE</color>
+
+    <color name="colorC">#F44336</color>
+    <color name="colorCSharp">#E91E63</color>
+    <color name="colorD">#673AB7</color>
+    <color name="colorDSharp">#9C27B0</color>
+    <color name="colorE">#FF9800</color>
+    <color name="colorF">#4CAF50</color>
+    <color name="colorFSharp">#8BC34A</color>
+    <color name="colorG">#3F51B5</color>
+    <color name="colorGSharp">#2196F3</color>
+    <color name="colorA">#9E9E9E</color>
+    <color name="colorASharp">#795548</color>
+    <color name="colorB">#009688</color>
+</resources>
