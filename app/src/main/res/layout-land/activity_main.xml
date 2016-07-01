@@ -4,19 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="sstudio.enchord.MainActivity"
+    tools:context=".fragments.FretboardFragment"
     android:orientation="vertical"
     android:background="@color/colorBackground">
 
-    <FrameLayout
-        android:layout_height="0dp"
+    <fragment
+        android:name="sstudio.enchord.fragments.FretboardFragment"
+        android:id="@+id/fretboard_fragment"
         android:layout_width="match_parent"
-        android:layout_weight="50">
-        <sstudio.enchord.FretboardHorizontalView
-            android:id="@+id/fretboard"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </FrameLayout>
+        android:layout_height="0dp"
+        android:layout_weight="50"/>
     <FrameLayout
         android:layout_height="0dp"
         android:layout_width="match_parent"

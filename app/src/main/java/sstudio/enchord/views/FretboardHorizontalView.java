@@ -1,4 +1,4 @@
-package sstudio.enchord;
+package sstudio.enchord.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,13 +7,14 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
+
+import sstudio.enchord.R;
+import sstudio.enchord.views.FretboardView;
 
 /**
  * Created by seanoh on 6/29/16.
  */
-public class FretboardView extends View {
+public class FretboardHorizontalView extends FretboardView {
 
     private int w, h;
     private Paint fretboardPaint;
@@ -22,8 +23,7 @@ public class FretboardView extends View {
     private double[] fretRatios, fingeringRatios;
     private int startFret, endFret;
 
-    // initialize the paints
-    public FretboardView(Context context, AttributeSet attr) {
+    public FretboardHorizontalView(Context context, AttributeSet attr) {
         super(context, attr);
         final int version = Build.VERSION.SDK_INT;
 
@@ -49,17 +49,17 @@ public class FretboardView extends View {
             return;
         }
 
-        int stringThickness = w/120;
-        int fretThickness = h/250;
+        int stringThickness = h/120;
+        int fretThickness = w/250;
         fretboardPaint.setStrokeWidth(stringThickness);
-        double d = w/7.71428571429; // proportion of screen width
-        double padding = h/23.1; // proportion of screen height
-        double fretboardHeight = h - 2 * padding;
+        double d = h/7.71428571429; // proportion of screen width
+        double padding = w/23.1; // proportion of screen h
+        double fretboardHeight = w - 2 * padding;
 
         // draw the guitar strings
         for(int i = 0; i < 6; i++){
-            canvas.drawLine((float)(w/2-d*(i-2.5)), (float) padding,
-                            (float)(w/2-d*(i-2.5)), (float)(h-padding), fretboardPaint);
+            canvas.drawLine((float) padding, (float)(h/2-d*(i-2.5)),
+                            (float) (w - padding), (float)(h/2-d*(i-2.5)), fretboardPaint);
         }
 
         //draw the first fret
@@ -68,15 +68,15 @@ public class FretboardView extends View {
         } else {
             fretboardPaint.setStrokeWidth(fretThickness);
         }
-        canvas.drawLine((float) (w / 2 - 2.5 * d) - stringThickness / 2, (float) padding,
-                        (float) (w / 2 + 2.5 * d) + stringThickness / 2, (float) padding, fretboardPaint);
+        canvas.drawLine((float) padding, (float) (h/2-2.5*d)-stringThickness/2,
+                        (float) padding, (float) (h/2+2.5*d)+stringThickness/2, fretboardPaint);
 
         //draw the frets
         fretboardPaint.setStrokeWidth(fretThickness);
         for(int i = 0; i < fretRatios.length; i++){
-            canvas.drawText((i+startFret)+"", (float)(w/2-3*d), (float)(fingeringRatios[i] * fretboardHeight + textOffset + padding), fretNumberPaint);
-            canvas.drawLine((float)(w/2-5*d/2)-stringThickness/2, (float)(fretRatios[i] * fretboardHeight + padding),
-                            (float)(w/2+5*d/2)+stringThickness/2, (float)(fretRatios[i] * fretboardHeight + padding), fretboardPaint);
+            canvas.drawText((startFret+i)+"", (float)(fingeringRatios[i] * fretboardHeight + padding), (float)(h/2+3*d) + textOffset, fretNumberPaint);
+            canvas.drawLine((float)(fretRatios[i] * fretboardHeight + padding), (float)(h /2-5*d/2)-stringThickness/2,
+                            (float)(fretRatios[i] * fretboardHeight + padding), (float)(h /2+5*d/2)+stringThickness/2,  fretboardPaint);
         }
     }
 
