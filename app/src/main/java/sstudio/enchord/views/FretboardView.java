@@ -7,7 +7,6 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import sstudio.enchord.R;
@@ -21,7 +20,7 @@ public class FretboardView extends View {
     private Paint fretboardPaint;
     private TextPaint fretNumberPaint;
     private float textOffset;
-    private double[] fretRatios, fingeringRatios;
+    private double[] fretRatios, midFretRatios;
     private int startFret, endFret;
 
     // initialize the paints
@@ -76,7 +75,7 @@ public class FretboardView extends View {
         //draw the frets
         fretboardPaint.setStrokeWidth(fretThickness);
         for(int i = 0; i < fretRatios.length; i++){
-            canvas.drawText((i+startFret)+"", (float)(w/2-3*d), (float)(fingeringRatios[i] * fretboardHeight + textOffset + padding), fretNumberPaint);
+            canvas.drawText((i+startFret)+"", (float)(w/2-3*d), (float)(midFretRatios[i] * fretboardHeight + textOffset + padding), fretNumberPaint);
             canvas.drawLine((float)(w/2-5*d/2)-stringThickness/2, (float)(fretRatios[i] * fretboardHeight + padding),
                             (float)(w/2+5*d/2)+stringThickness/2, (float)(fretRatios[i] * fretboardHeight + padding), fretboardPaint);
         }
@@ -91,7 +90,7 @@ public class FretboardView extends View {
 
     public void setFretRatios(double[] fretRatios, double[] fingeringRatios) {
         this.fretRatios = fretRatios;
-        this.fingeringRatios = fingeringRatios;
+        this.midFretRatios = fingeringRatios;
     }
 
     public void setFretRange(int startFret, int endFret) {

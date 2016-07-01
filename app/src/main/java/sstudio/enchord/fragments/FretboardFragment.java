@@ -14,7 +14,7 @@ public class FretboardFragment extends Fragment {
     //TODO: move to settings file
     private int startFret = 1;// inclusive. standard: 1
     private int endFret = 20;// not inclusive. standard: 20
-    private double[] fretRatios, fingeringRatios;
+    private double[] fretRatios, midFretRatios;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class FretboardFragment extends Fragment {
         FretboardView myFretboard = (FretboardView) rootView.findViewById(R.id.fretboard);
         if(myFretboard != null) {
             myFretboard.setFretRange(startFret, endFret);
-            myFretboard.setFretRatios(fretRatios, fingeringRatios);
+            myFretboard.setFretRatios(fretRatios, midFretRatios);
         }
         return rootView;
     }
@@ -47,19 +47,19 @@ public class FretboardFragment extends Fragment {
         }
 
         double[] fretRatios = new double[numFrets];
-        fingeringRatios = new double[numFrets];
+        midFretRatios = new double[numFrets];
 
         fretRatios[0] = 1/17.817;
-        fingeringRatios[0] = (0 + fretRatios[0])/2;
+        midFretRatios[0] = (0 + fretRatios[0])/2;
         for(int i = 1; i < numFrets; i++){
             fretRatios[i] = (1 - fretRatios[i-1])/17.817 + fretRatios[i-1];
-            fingeringRatios[i] = (fretRatios[i-1] + fretRatios[i])/2;
+            midFretRatios[i] = (fretRatios[i-1] + fretRatios[i])/2;
         }
         //base the size off of the position of the last fret
         double ratio = 1/fretRatios[numFrets - 1];
         for(int i = 0; i < numFrets; i++){
             fretRatios[i] = fretRatios[i] * ratio;
-            fingeringRatios[i] = fingeringRatios[i] * ratio;
+            midFretRatios[i] = midFretRatios[i] * ratio;
         }
 
         return fretRatios;
