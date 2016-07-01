@@ -44,16 +44,16 @@ public class FretboardFragment extends Fragment {
             case 7:
                 openNotes[6] = Note.noteToID('b', 0, 2);
             case 6:
-                openNotes[5] = Note.noteToID('f', 0, 3);
+                openNotes[5] = Note.noteToID('e', 0, 3);
                 openNotes[4] = Note.noteToID('a', 0, 3);
-                openNotes[3] = Note.noteToID('c', 0, 4);
-                openNotes[2] = Note.noteToID('f', 0, 4);
-                openNotes[1] = Note.noteToID('c', 0, 5);
-                openNotes[0] = Note.noteToID('f', 0, 5);
+                openNotes[3] = Note.noteToID('d', 0, 4);
+                openNotes[2] = Note.noteToID('g', 0, 4);
+                openNotes[1] = Note.noteToID('b', 0, 4);
+                openNotes[0] = Note.noteToID('e', 0, 5);
                 break;
             default:
         }
-        //capo off
+        //capo off = -1. if capo == 0, that means it's on the 1st fret.
         capo = -1;
 
         // calculate fret ratios
@@ -81,6 +81,7 @@ public class FretboardFragment extends Fragment {
         if(mNoteBoard != null) {
             mNoteBoard.setFretRatios(fretRatios, midFretRatios);
             mNoteBoard.setNoteBoard(fretboardNotes);
+            mNoteBoard.setCapo(capo);
         }
         return rootView;
     }

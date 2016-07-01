@@ -21,6 +21,7 @@ public class NoteBoardHorizontalView extends NoteBoardView {
     private TextPaint noteTextPaint;
     float textOffset;
     int[][] noteBoard;
+    private int capoPos;
 
     public NoteBoardHorizontalView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -39,10 +40,12 @@ public class NoteBoardHorizontalView extends NoteBoardView {
         }
         for(int i = 0; i < noteBoard.length; i++){
             for(int j = 0; j < noteBoard[i].length; j++){
-                canvas.drawText(Note.IDToNote(noteBoard[i][j], true).getShort(true) + "",
-                        (float) (midFretRatios[j] * (w - 2 * w /23.1) + w /23.1),
-                        (float) (h /2- h /7.71428571429*(i-2.5)) + textOffset,
-                        noteTextPaint);
+                if(j > capoPos) {
+                    canvas.drawText(Note.IDToNote(noteBoard[i][j], true).getShort(true) + "",
+                            (float) (midFretRatios[j] * (w - 2 * w / 23.1) + w / 23.1),
+                            (float) (h / 2 - h / 7.71428571429 * (i - 2.5)) + textOffset,
+                            noteTextPaint);
+                }
             }
         }
 
@@ -62,5 +65,10 @@ public class NoteBoardHorizontalView extends NoteBoardView {
 
     public void setNoteBoard(int[][] noteBoard){
         this.noteBoard = noteBoard;
+    }
+
+    public void setCapo(int capoPos){
+        this.capoPos = capoPos;
+        this.invalidate();
     }
 }

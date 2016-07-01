@@ -20,10 +20,13 @@ public class NoteBoardView extends View {
     private TextPaint noteTextPaint;
     float textOffset;
     int[][] noteBoard;
+    Paint[] notePaint;
+    int capoPos;
 
     public NoteBoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        notePaint = new Paint[12];// 12 is the number of notes in an octave
         noteTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         noteTextPaint.setColor(Color.RED);
         noteTextPaint.setTextAlign(Paint.Align.CENTER);
@@ -38,10 +41,12 @@ public class NoteBoardView extends View {
         }
         for(int i = 0; i < noteBoard.length; i++){
             for(int j = 0; j < noteBoard[i].length; j++){
-                canvas.drawText(Note.IDToNote(noteBoard[i][j], true).getShort(true) + "",
-                        (float) (w/2-w/7.71428571429*(i-2.5)),
-                        (float) (midFretRatios[j] * (h - 2 * h/23.1) + textOffset + h/23.1),
-                        noteTextPaint);
+                if(j > capoPos) {
+                    canvas.drawText(Note.IDToNote(noteBoard[i][j], true).getShort(true) + "",
+                            (float) (w / 2 - w / 7.71428571429 * (i - 2.5)),
+                            (float) (midFretRatios[j] * (h - 2 * h / 23.1) + textOffset + h / 23.1),
+                            noteTextPaint);
+                }
             }
         }
 
@@ -61,5 +66,10 @@ public class NoteBoardView extends View {
 
     public void setNoteBoard(int[][] noteBoard){
         this.noteBoard = noteBoard;
+    }
+
+    public void setCapo(int capoPos){
+        this.capoPos = capoPos;
+        this.invalidate();
     }
 }
