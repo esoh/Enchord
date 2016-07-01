@@ -1,4 +1,4 @@
-package sstudio.enchord.views;
+package sstudio.enchord.views.horizontal;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,6 +9,7 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 
 import sstudio.enchord.R;
+import sstudio.enchord.views.FretboardView;
 
 /**
  * Created by seanoh on 6/29/16.
@@ -52,7 +53,7 @@ public class FretboardHorizontalView extends FretboardView {
         int fretThickness = w/250;
         fretboardPaint.setStrokeWidth(stringThickness);
         double d = h/7.71428571429; // proportion of screen width
-        double padding = w/23.1; // proportion of screen h
+        double padding = w/23.1; // proportion of screen w
         double fretboardHeight = w - 2 * padding;
 
         // draw the guitar strings

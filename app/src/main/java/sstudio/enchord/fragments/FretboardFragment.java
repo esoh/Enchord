@@ -7,19 +7,54 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import sstudio.enchord.R;
+import sstudio.enchord.objects.Note;
 import sstudio.enchord.views.FretboardView;
+import sstudio.enchord.views.NoteBoardView;
 
 public class FretboardFragment extends Fragment {
 
     //TODO: move to settings file
-    private int startFret = 1;// inclusive. standard: 1
-    private int endFret = 20;// not inclusive. standard: 20
+    private int startFret;// inclusive. standard: 1
+    private int endFret;// not inclusive. standard: 20
+    private int numStrings;
     private double[] fretRatios, midFretRatios;
+    private int[] openNotes;
+    private int[][] fretboardNotes;
+    private int capo; // position on the chart, NOT the fret # it's on
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View rootView = inflater.inflate(R.layout.fretboard_view, container, false);
+
+        // initialize settings, openNotes, capo
+        // 19 fret guitar, can be adjusted to <= 24. start < end.
+        startFret = 1;
+        endFret = 16;
+        // 6 string guitar. not adjustable as far as right now
+        numStrings = 6;
+        // standard openNotes
+        if(numStrings > 8 || numStrings < 6){
+            throw new IllegalArgumentException("Unsupported number of strings (supported: 6-8): " + numStrings);
+        }
+        openNotes = new int[numStrings];
+        switch(numStrings){
+            case 8:
+                openNotes[7] = Note.noteToID('f', 1, 2);
+            case 7:
+                openNotes[6] = Note.noteToID('b', 0, 2);
+            case 6:
+                openNotes[5] = Note.noteToID('f', 0, 3);
+                openNotes[4] = Note.noteToID('a', 0, 3);
+                openNotes[3] = Note.noteToID('c', 0, 4);
+                openNotes[2] = Note.noteToID('f', 0, 4);
+                openNotes[1] = Note.noteToID('c', 0, 5);
+                openNotes[0] = Note.noteToID('f', 0, 5);
+                break;
+            default:
+        }
+        //capo off
+        capo = -1;
 
         // calculate fret ratios
         try {
@@ -28,10 +63,24 @@ public class FretboardFragment extends Fragment {
             e.printStackTrace();
         }
 
-        FretboardView myFretboard = (FretboardView) rootView.findViewById(R.id.fretboard);
-        if(myFretboard != null) {
-            myFretboard.setFretRange(startFret, endFret);
-            myFretboard.setFretRatios(fretRatios, midFretRatios);
+        // add fretboard notes
+        fretboardNotes = new int[numStrings][endFret-startFret];
+        for(int i = 0; i < numStrings; i++){
+            for(int j = 0; j < endFret-startFret; j++){
+                fretboardNotes[i][j] = openNotes[i] + startFret + j;
+            }
+        }
+
+        FretboardView mFretboard = (FretboardView) rootView.findViewById(R.id.fretboard);
+        if(mFretboard != null) {
+            mFretboard.setFretRange(startFret, endFret);
+            mFretboard.setFretRatios(fretRatios, midFretRatios);
+        }
+
+        NoteBoardView mNoteBoard = (NoteBoardView) rootView.findViewById(R.id.note_board);
+        if(mNoteBoard != null) {
+            mNoteBoard.setFretRatios(fretRatios, midFretRatios);
+            mNoteBoard.setNoteBoard(fretboardNotes);
         }
         return rootView;
     }

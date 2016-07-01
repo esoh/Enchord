@@ -5,4 +5,8 @@
         android:id="@+id/fretboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <sstudio.enchord.views.NoteBoardView
+        android:id="@+id/note_board"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>
