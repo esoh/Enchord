@@ -7,7 +7,7 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.View;
 
 /**
  * Created by seanoh on 6/29/16.
@@ -18,7 +18,8 @@ public class FretboardHorizontalView extends FretboardView {
     private Paint fretboardPaint;
     private TextPaint fretNumberPaint;
     private float textOffset;
-    private int numFrets;
+    private double[] fretRatios, fingeringRatios;
+    private int startFret, endFret;
 
     public FretboardHorizontalView(Context context, AttributeSet attr) {
         super(context, attr);
@@ -39,50 +40,42 @@ public class FretboardHorizontalView extends FretboardView {
         textOffset = ((fretNumberPaint.descent() - fretNumberPaint.ascent()) / 2) - fretNumberPaint.descent();
     }
 
-    public void setNumFrets(int numFrets){
-        this.numFrets = numFrets;
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         // nothing to draw. numFrets not set.
-        if(numFrets == 0){
+        if(fretRatios == null){
             return;
         }
-        Log.d("dimen", "height:" + h);
-        Log.d("dimen", "width:" + w);
-        int stringThickness = h /120;
-        int fretThickness = w /250;
+
+        int stringThickness = h/120;
+        int fretThickness = w/250;
         fretboardPaint.setStrokeWidth(stringThickness);
-        double d = h /7.71428571429; // convert this into a proportion of h
-        double padding = w /23.1; // convert this into a proportion of w
+        double d = h/7.71428571429; // proportion of screen width
+        double padding = w/23.1; // proportion of screen h
+        double fretboardHeight = w - 2 * padding;
 
         // draw the guitar strings
         for(int i = 0; i < 6; i++){
-            canvas.drawLine((float)padding, (float)(h/2-5*d/2+d*i), (float)(w-padding), (float)(h/2-5*d/2+d*i), fretboardPaint);
+            canvas.drawLine((float) padding, (float)(h/2-d*(i-2.5)),
+                            (float) (w - padding), (float)(h/2-d*(i-2.5)), fretboardPaint);
         }
 
-        double scaleLength = 1.50084054172*(w -2*padding) + padding;
-        double currentFret = padding;
-        double prevFret;
-
-        //draw the nut
-        fretboardPaint.setStrokeWidth(fretThickness*2);
-        canvas.drawLine((float)currentFret, (float) (h /2-5*d/2), (float)currentFret, (float)(h /2+5*d/2), fretboardPaint);
-        prevFret = currentFret;
-        currentFret = (scaleLength - prevFret)/17.817f + prevFret;
-        float fretNumberX = (float) (prevFret + currentFret)/2;
+        //draw the first fret
+        if(startFret == 1) {
+            fretboardPaint.setStrokeWidth(fretThickness * 2);
+        } else {
+            fretboardPaint.setStrokeWidth(fretThickness);
+        }
+        canvas.drawLine((float) padding, (float) (h/2-2.5*d)-stringThickness/2,
+                        (float) padding, (float) (h/2+2.5*d)+stringThickness/2, fretboardPaint);
 
         //draw the frets
         fretboardPaint.setStrokeWidth(fretThickness);
-        for(int i = 0; i < numFrets; i++){
-            canvas.drawText((i+1)+"", fretNumberX, (float)(h /2+3*d) + textOffset, fretNumberPaint);
-            canvas.drawLine((float)currentFret, (float)(h /2-5*d/2), (float)currentFret, (float)(h /2+5*d/2), fretboardPaint);
-            prevFret = currentFret;
-            currentFret = (scaleLength - prevFret)/17.817f + prevFret;
-            fretNumberX = (float) (prevFret + currentFret)/2;
+        for(int i = 0; i < fretRatios.length; i++){
+            canvas.drawText((startFret+i)+"", (float)(fingeringRatios[i] * fretboardHeight + padding), (float)(h/2+3*d) + textOffset, fretNumberPaint);
+            canvas.drawLine((float)(fretRatios[i] * fretboardHeight + padding), (float)(h /2-5*d/2)-stringThickness/2,
+                            (float)(fretRatios[i] * fretboardHeight + padding), (float)(h /2+5*d/2)+stringThickness/2,  fretboardPaint);
         }
-
     }
 
     @Override
@@ -90,5 +83,15 @@ public class FretboardHorizontalView extends FretboardView {
         this.w = w;
         this.h = h;
         super.onSizeChanged(w, h, oldw, oldh);
+    }
+
+    public void setFretRatios(double[] fretRatios, double[] fingeringRatios) {
+        this.fretRatios = fretRatios;
+        this.fingeringRatios = fingeringRatios;
+    }
+
+    public void setFretRange(int startFret, int endFret) {
+        this.startFret = startFret;
+        this.endFret = endFret;
     }
 }

@@ -19,8 +19,10 @@ public class FretboardView extends View {
     private Paint fretboardPaint;
     private TextPaint fretNumberPaint;
     private float textOffset;
-    private int numFrets;
+    private double[] fretRatios, fingeringRatios;
+    private int startFret, endFret;
 
+    // initialize the paints
     public FretboardView(Context context, AttributeSet attr) {
         super(context, attr);
         final int version = Build.VERSION.SDK_INT;
@@ -40,50 +42,42 @@ public class FretboardView extends View {
         textOffset = ((fretNumberPaint.descent() - fretNumberPaint.ascent()) / 2) - fretNumberPaint.descent();
     }
 
-    public void setNumFrets(int numFrets){
-        this.numFrets = numFrets;
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         // nothing to draw. numFrets not set.
-        if(numFrets == 0){
+        if(fretRatios == null){
             return;
         }
-        Log.d("dimen", "width:" + w);
-        Log.d("dimen", "height:" + h);
+
         int stringThickness = w/120;
         int fretThickness = h/250;
         fretboardPaint.setStrokeWidth(stringThickness);
-        double d = w/7.71428571429; // convert this into a proportion of w
-        double padding = h/23.1; // convert this into a proportion of h
+        double d = w/7.71428571429; // proportion of screen width
+        double padding = h/23.1; // proportion of screen height
+        double fretboardHeight = h - 2 * padding;
 
         // draw the guitar strings
-        for(double i = w/2-5*d/2; i <= w/2+5*d/2; i+=d){
-            canvas.drawLine((float)i, (float)padding, (float)i, (float)(h-padding), fretboardPaint);
+        for(int i = 0; i < 6; i++){
+            canvas.drawLine((float)(w/2-d*(i-2.5)), (float) padding,
+                            (float)(w/2-d*(i-2.5)), (float)(h-padding), fretboardPaint);
         }
 
-        double scaleLength = 1.50084054172*(h-2*padding) + padding;
-        double currentFret = padding;
-        double prevFret;
-
-        //draw the nut
-        fretboardPaint.setStrokeWidth(fretThickness*2);
-        canvas.drawLine((float) (w/2-5*d/2), (float)currentFret, (float)(w/2+5*d/2), (float)currentFret, fretboardPaint);
-        prevFret = currentFret;
-        currentFret = (scaleLength - prevFret)/17.817f + prevFret;
-        float fretNumberY = (float) (prevFret + currentFret)/2;
+        //draw the first fret
+        if(startFret == 1) {
+            fretboardPaint.setStrokeWidth(fretThickness * 2);
+        } else {
+            fretboardPaint.setStrokeWidth(fretThickness);
+        }
+        canvas.drawLine((float) (w / 2 - 2.5 * d) - stringThickness / 2, (float) padding,
+                        (float) (w / 2 + 2.5 * d) + stringThickness / 2, (float) padding, fretboardPaint);
 
         //draw the frets
         fretboardPaint.setStrokeWidth(fretThickness);
-        for(int i = 0; i < numFrets; i++){
-            canvas.drawText((i+1)+"", (float)(w/2-3*d), fretNumberY + textOffset, fretNumberPaint);
-            canvas.drawLine((float)(w/2-5*d/2), (float)currentFret, (float)(w/2+5*d/2), (float)currentFret, fretboardPaint);
-            prevFret = currentFret;
-            currentFret = (scaleLength - prevFret)/17.817f + prevFret;
-            fretNumberY = (float) (prevFret + currentFret)/2;
+        for(int i = 0; i < fretRatios.length; i++){
+            canvas.drawText((i+startFret)+"", (float)(w/2-3*d), (float)(fingeringRatios[i] * fretboardHeight + textOffset + padding), fretNumberPaint);
+            canvas.drawLine((float)(w/2-5*d/2)-stringThickness/2, (float)(fretRatios[i] * fretboardHeight + padding),
+                            (float)(w/2+5*d/2)+stringThickness/2, (float)(fretRatios[i] * fretboardHeight + padding), fretboardPaint);
         }
-
     }
 
     @Override
@@ -91,5 +85,15 @@ public class FretboardView extends View {
         this.w = w;
         this.h = h;
         super.onSizeChanged(w, h, oldw, oldh);
+    }
+
+    public void setFretRatios(double[] fretRatios, double[] fingeringRatios) {
+        this.fretRatios = fretRatios;
+        this.fingeringRatios = fingeringRatios;
+    }
+
+    public void setFretRange(int startFret, int endFret) {
+        this.startFret = startFret;
+        this.endFret = endFret;
     }
 }
