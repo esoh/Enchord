@@ -258,5 +258,6 @@ public class NoteBoardView extends View {
 
     public void setOpenNotes(int[] openNotes) {
         this.openNotes = openNotes;
+        invalidate();
     }
 }
