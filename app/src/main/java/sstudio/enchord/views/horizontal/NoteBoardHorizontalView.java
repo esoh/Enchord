@@ -58,9 +58,9 @@ public class NoteBoardHorizontalView extends NoteBoardView {
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
-    public void setFretRatios(double[] fretRatios, double[] fingeringRatios) {
+    public void setFretRatios(double[] fretRatios, double[] midFretRatios) {
         this.fretRatios = fretRatios;
-        this.midFretRatios = fingeringRatios;
+        this.midFretRatios = midFretRatios;
     }
 
     public void setNoteBoard(int[][] noteBoard){

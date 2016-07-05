@@ -193,9 +193,9 @@ public class NoteBoardView extends View {
         }
     }
 
-    public void setFretRatios(double[] fretRatios, double[] fingeringRatios) {
+    public void setFretRatios(double[] fretRatios, double[] midFretRatios) {
         this.fretRatios = fretRatios;
-        this.midFretRatios = fingeringRatios;
+        this.midFretRatios = midFretRatios;
         this.noteRadius = getResources().getDimensionPixelSize(R.dimen.note_radius);
         this.noteBorderInnerRadius = noteRadius - getResources().getDimensionPixelSize(R.dimen.one_sp);
     }
