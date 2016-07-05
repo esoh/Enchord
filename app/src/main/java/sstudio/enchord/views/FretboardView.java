@@ -16,13 +16,12 @@ import sstudio.enchord.R;
  * Created by seanoh on 6/29/16.
  */
 public class FretboardView extends View {
-
-    private int w, h;
-    private Paint fretboardPaint;
-    private TextPaint fretNumberPaint;
-    private float textOffset;
-    private double[] fretRatios, midFretRatios;
-    private int startFret, endFret;
+    protected int w, h;
+    protected Paint fretboardPaint;
+    protected TextPaint fretNumberPaint;
+    protected float textOffset;
+    protected double[] fretRatios, midFretRatios;
+    protected int startFret, endFret;
 
     // initialize the paints
     public FretboardView(Context context, AttributeSet attr) {

@@ -17,20 +17,19 @@ import sstudio.enchord.objects.Note;
  * Created by seanoh on 6/30/16.
  */
 public class NoteBoardView extends View {
-    private int minPadding = getResources().getDimensionPixelSize(R.dimen.one_sp);
-    private int w, h;
-    private double[] fretRatios, midFretRatios;
-    private TextPaint noteTextPaint;
-    private float textOffset;
-    private int[][] noteBoard;
-    private Paint notePaint, noteInnerPaint, noteStringPaint, noteStringInnerPaint;
-    private int capoPos;
-    private float noteRadius, noteBorderInnerRadius;
-    private boolean includeText;
-    private int[][] noteColors;
-    private int[] notesToShowAll;
-    private boolean showOctaves;
-    private int[] openNotes;
+    protected int w, h;
+    protected double[] fretRatios, midFretRatios;
+    protected int[][] noteBoard;
+    protected int minPadding = getResources().getDimensionPixelSize(R.dimen.one_sp);
+    protected float noteRadius, noteBorderInnerRadius;
+    protected boolean showOctaves;
+    protected int[] openNotes;
+    protected int[] notesToShowAll;
+    protected Paint notePaint, noteInnerPaint, noteStringPaint, noteStringInnerPaint;
+    protected int[][] noteColors;
+    protected TextPaint noteTextPaint;
+    protected float textOffset;
+    protected int capoPos;
 
     public NoteBoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -119,16 +118,16 @@ public class NoteBoardView extends View {
                 float x = (float) (w / 2 - w / displayConstants.STRING_DISTANCE_RATIO * (i - 2.5));
                 float y = (float)(h/displayConstants.TOP_BOTTOM_PADDING_RATIO);
                 int note = openNotes[i];
+                drawNoteString(x, y, note, canvas);
                 drawNote(x, y, note, canvas);
-                drawNoteString(x, y + noteRadius, note, canvas);
             } else if(capoPos >= 0 &&
                     ((notesToShowAll[noteBoard[i][0] + capoPos] == 1 && showOctaves) ||
                     (notesToShowAll[noteBoard[i][0] + capoPos] == 2))){
                 float x = (float) (w / 2 - w / displayConstants.STRING_DISTANCE_RATIO * (i - 2.5));
                 float y = (float) (midFretRatios[capoPos] * (h - 2 * h / displayConstants.TOP_BOTTOM_PADDING_RATIO) + h / displayConstants.TOP_BOTTOM_PADDING_RATIO);
                 int note = noteBoard[i][0] + capoPos;
+                drawNoteString(x, y, note, canvas);
                 drawNote(x, y, note, canvas);
-                drawNoteString(x, y + noteRadius, note, canvas);
             }
 
             // check all notes along this string
@@ -144,7 +143,7 @@ public class NoteBoardView extends View {
         }
     }
 
-    private void drawNote(float x, float y, int note, Canvas canvas){
+    protected void drawNote(float x, float y, int note, Canvas canvas){
         int type = getOctaveType(note);
         notePaint.setColor(noteColors[type][note % 12]);
         canvas.drawCircle(x, y, noteRadius, notePaint);
@@ -156,13 +155,12 @@ public class NoteBoardView extends View {
             noteTextPaint.setColor(Color.WHITE);
         }
 
-        if (includeText) {
-            canvas.drawText(Note.IDToNote(note, true).getShort(true) + "",
-                    x, y + textOffset, noteTextPaint);
-        }
+
+        canvas.drawText(Note.IDToNote(note, true).getShort(true) + "",
+                x, y + textOffset, noteTextPaint);
     }
 
-    private void drawNoteString(float x, float y, int note, Canvas canvas){
+    protected void drawNoteString(float x, float y, int note, Canvas canvas){
         int type = getOctaveType(note);
         noteStringPaint.setColor(noteColors[type][note % 12]);
         canvas.drawLine(x, y, x, (float)(h - h/displayConstants.TOP_BOTTOM_PADDING_RATIO + h/(displayConstants.FRET_THICKNESS_RATIO*3/2)), noteStringPaint);
@@ -176,7 +174,6 @@ public class NoteBoardView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         this.w = w;
         this.h = h;
-        this.includeText = true;
         noteStringPaint.setStrokeWidth(w/(displayConstants.STRING_THICKNESS_RATIO/3*2));
         noteStringInnerPaint.setStrokeWidth(w/(displayConstants.STRING_THICKNESS_RATIO/3*2) - minPadding);
 
@@ -212,7 +209,7 @@ public class NoteBoardView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
-    private int getOctaveType(int note){
+    protected int getOctaveType(int note){
         if (note > 12 * 6) {
             return 0;
         } else if (note > 12 * 5) {
