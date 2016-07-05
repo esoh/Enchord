@@ -21,6 +21,7 @@ public class FretboardFragment extends Fragment {
     private int[] openNotes;
     private int[][] fretboardNotes;
     private int capo; // position on the chart, NOT the fret # it's on
+    private boolean[] notesToShow;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,6 +57,11 @@ public class FretboardFragment extends Fragment {
         //capo off = -1. if capo == 0, that means it's on the 1st fret.
         capo = -1;
 
+        notesToShow = new boolean[132];
+        notesToShow[60] = true;
+        notesToShow[64] = true;
+        notesToShow[67] = true;
+
         // calculate fret ratios
         try {
             fretRatios = getFretRatios(endFret - startFret);
@@ -82,6 +88,7 @@ public class FretboardFragment extends Fragment {
             mNoteBoard.setFretRatios(fretRatios, midFretRatios);
             mNoteBoard.setNoteBoard(fretboardNotes);
             mNoteBoard.setCapo(capo);
+            mNoteBoard.setNotes(notesToShow);
         }
         return rootView;
     }

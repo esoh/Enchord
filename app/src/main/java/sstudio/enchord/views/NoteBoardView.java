@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import sstudio.enchord.R;
@@ -27,9 +26,12 @@ public class NoteBoardView extends View {
     private float noteRadius, noteBorderInnerRadius;
     private boolean includeText;
     private int[][] noteColors;
+    private int[] notesToShowAll;
 
     public NoteBoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        notesToShowAll = new int[132];
 
         notePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         noteInnerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -101,7 +103,7 @@ public class NoteBoardView extends View {
         }
         for(int i = 0; i < noteBoard.length; i++){
             for(int j = 0; j < noteBoard[i].length; j++){
-                if(j > capoPos) {
+                if(j > capoPos && notesToShowAll[noteBoard[i][j]] != 0) {
                     float x = (float) (w/2 - w/7.71428571429 * (i-2.5));
                     float y = (float) (midFretRatios[j] * (h - 2 * h/23.1) + h/23.1);
                     int type;
@@ -117,7 +119,7 @@ public class NoteBoardView extends View {
                     notePaint.setColor(noteColors[type][noteBoard[i][j]%12]);
                     canvas.drawCircle(x, y, noteRadius, notePaint);
 
-                    if(true) {
+                    if(notesToShowAll[noteBoard[i][j]] == 1) {
                         canvas.drawCircle(x, y, noteBorderInnerRadius, noteInnerPaint);
                         noteTextPaint.setColor(noteColors[type][noteBoard[i][j]%12]);
                     } else {
@@ -155,5 +157,19 @@ public class NoteBoardView extends View {
     public void setCapo(int capoPos){
         this.capoPos = capoPos;
         this.invalidate();
+    }
+
+    public void setNotes(boolean[] notesToShow){
+        for(int i = 0; i < notesToShow.length; i++){
+            if(notesToShow[i]){
+                for(int note = i%12; note < 132; note+=12) {
+                    if (notesToShowAll[note] != 2) {
+                        notesToShowAll[note] = 1;
+                    }
+                }
+                notesToShowAll[i] = 2;
+            }
+        }
+        invalidate();
     }
 }
