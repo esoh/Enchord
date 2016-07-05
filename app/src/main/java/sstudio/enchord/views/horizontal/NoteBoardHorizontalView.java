@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.view.View;
 
 import sstudio.enchord.R;
 import sstudio.enchord.objects.Note;
@@ -29,7 +28,7 @@ public class NoteBoardHorizontalView extends NoteBoardView {
         noteTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         noteTextPaint.setColor(Color.RED);
         noteTextPaint.setTextAlign(Paint.Align.CENTER);
-        noteTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.fret_number_font_size));
+        noteTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.max_fret_font_size));
         textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2) - noteTextPaint.descent();
     }
 

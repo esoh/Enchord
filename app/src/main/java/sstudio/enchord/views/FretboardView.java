@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
+import sstudio.enchord.constants.displayConstants;
 
 import sstudio.enchord.R;
 
@@ -39,7 +40,7 @@ public class FretboardView extends View {
         }
 
         fretNumberPaint.setTextAlign(Paint.Align.CENTER);
-        fretNumberPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.fret_number_font_size));
+        fretNumberPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.max_fret_font_size));
         textOffset = ((fretNumberPaint.descent() - fretNumberPaint.ascent()) / 2) - fretNumberPaint.descent();
     }
 
@@ -50,11 +51,11 @@ public class FretboardView extends View {
             return;
         }
 
-        int stringThickness = w/120;
-        int fretThickness = h/250;
+        int stringThickness = w/displayConstants.STRING_THICKNESS_RATIO;
+        int fretThickness = h/displayConstants.FRET_THICKNESS_RATIO;
         fretboardPaint.setStrokeWidth(stringThickness);
-        double d = w/7.71428571429; // proportion of screen width
-        double padding = h/23.1; // proportion of screen height
+        double d = w/displayConstants.STRING_DISTANCE_RATIO; // proportion of screen width
+        double padding = h/displayConstants.TOP_BOTTOM_PADDING_RATIO; // proportion of screen height
         double fretboardHeight = h - 2 * padding;
 
         // draw the guitar strings

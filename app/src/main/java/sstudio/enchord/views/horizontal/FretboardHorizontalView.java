@@ -38,7 +38,7 @@ public class FretboardHorizontalView extends FretboardView {
         }
 
         fretNumberPaint.setTextAlign(Paint.Align.CENTER);
-        fretNumberPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.fret_number_font_size));
+        fretNumberPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.max_fret_font_size));
         textOffset = ((fretNumberPaint.descent() - fretNumberPaint.ascent()) / 2) - fretNumberPaint.descent();
     }
 

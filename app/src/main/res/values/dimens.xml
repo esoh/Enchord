@@ -2,7 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="fret_number_font_size">12sp</dimen>
+    <dimen name="max_fret_font_size">12sp</dimen>
     <dimen name="note_radius">10sp</dimen>
     <dimen name="one_sp">1sp</dimen>
 </resources>
