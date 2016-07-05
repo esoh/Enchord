@@ -59,9 +59,9 @@ public class FretboardFragment extends Fragment {
         capo = -1;
 
         notesToShow = new boolean[132];
-        notesToShow[60] = true;
-        notesToShow[64] = true;
-        notesToShow[67] = true;
+        notesToShow[Note.noteToID('c', 0, 5)] = true;
+        notesToShow[Note.noteToID('e', 0, 5)] = true;
+        notesToShow[Note.noteToID('g', 0, 5)] = true;
         showOctaves = true;
 
         // calculate fret ratios
@@ -87,6 +87,7 @@ public class FretboardFragment extends Fragment {
 
         NoteBoardView mNoteBoard = (NoteBoardView) rootView.findViewById(R.id.note_board);
         if(mNoteBoard != null) {
+            mNoteBoard.setOpenNotes(openNotes);
             mNoteBoard.setFretRatios(fretRatios, midFretRatios);
             mNoteBoard.setNoteBoard(fretboardNotes);
             mNoteBoard.setCapo(capo);
