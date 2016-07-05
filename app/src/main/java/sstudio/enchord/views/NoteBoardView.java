@@ -27,6 +27,7 @@ public class NoteBoardView extends View {
     private boolean includeText;
     private int[][] noteColors;
     private int[] notesToShowAll;
+    private boolean showOctaves;
 
     public NoteBoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -103,7 +104,9 @@ public class NoteBoardView extends View {
         }
         for(int i = 0; i < noteBoard.length; i++){
             for(int j = 0; j < noteBoard[i].length; j++){
-                if(j > capoPos && notesToShowAll[noteBoard[i][j]] != 0) {
+                if(j > capoPos &&
+                        ((notesToShowAll[noteBoard[i][j]] == 1 && showOctaves) ||
+                         (notesToShowAll[noteBoard[i][j]] == 2))) {
                     float x = (float) (w/2 - w/7.71428571429 * (i-2.5));
                     float y = (float) (midFretRatios[j] * (h - 2 * h/23.1) + h/23.1);
                     int type;
@@ -170,6 +173,11 @@ public class NoteBoardView extends View {
                 notesToShowAll[i] = 2;
             }
         }
+        invalidate();
+    }
+
+    public void setShowOctaves(boolean showOctaves) {
+        this.showOctaves = showOctaves;
         invalidate();
     }
 }
