@@ -6,16 +6,57 @@
     <color name="colorFretboard">#616161</color>
     <color name="colorBackground">#EEEEEE</color>
 
-    <color name="colorC">#F44336</color>
-    <color name="colorCSharp">#E91E63</color>
-    <color name="colorD">#673AB7</color>
-    <color name="colorDSharp">#9C27B0</color>
-    <color name="colorE">#FF9800</color>
-    <color name="colorF">#4CAF50</color>
-    <color name="colorFSharp">#8BC34A</color>
-    <color name="colorG">#3F51B5</color>
-    <color name="colorGSharp">#2196F3</color>
-    <color name="colorA">#9E9E9E</color>
-    <color name="colorASharp">#795548</color>
-    <color name="colorB">#009688</color>
+    <color name="colorC4">#FF8A65</color>
+    <color name="colorCSharp4">#F06292</color>
+    <color name="colorD4">#9575CD</color>
+    <color name="colorDSharp4">#BA68C8</color>
+    <color name="colorE4">#FFB74D</color>
+    <color name="colorF4">#81C784</color>
+    <color name="colorFSharp4">#AED581</color>
+    <color name="colorG4">#7986CB</color>
+    <color name="colorGSharp4">#64B5F6</color>
+    <color name="colorA4">#E0E0E0</color>
+    <color name="colorASharp4">#A1887F</color>
+    <color name="colorB4">#4DB6AC</color>
+
+    <color name="colorC5">#FF5722</color>
+    <color name="colorCSharp5">#E91E63</color>
+    <color name="colorD5">#673AB7</color>
+    <color name="colorDSharp5">#9C27B0</color>
+    <color name="colorE5">#FF9800</color>
+    <color name="colorF5">#4CAF50</color>
+    <color name="colorFSharp5">#8BC34A</color>
+    <color name="colorG5">#3F51B5</color>
+    <color name="colorGSharp5">#2196F3</color>
+    <color name="colorA5">#9E9E9E</color>
+    <color name="colorASharp5">#795548</color>
+    <color name="colorB5">#009688</color>
+
+    <color name="colorC6">#E64A19</color>
+    <color name="colorCSharp6">#C2185B</color>
+    <color name="colorD6">#512DA8</color>
+    <color name="colorDSharp6">#7B1FA2</color>
+    <color name="colorE6">#F57C00</color>
+    <color name="colorF6">#388E3C</color>
+    <color name="colorFSharp6">#689F38</color>
+    <color name="colorG6">#303F9F</color>
+    <color name="colorGSharp6">#1976D2</color>
+    <color name="colorA6">#616161</color>
+    <color name="colorASharp6">#5D4037</color>
+    <color name="colorB6">#00796B</color>
+
+    <color name="colorC7">#BF360C</color>
+    <color name="colorCSharp7">#880E4F</color>
+    <color name="colorD7">#311B92</color>
+    <color name="colorDSharp7">#4A148C</color>
+    <color name="colorE7">#E65100</color>
+    <color name="colorF7">#1B5E20</color>
+    <color name="colorFSharp7">#33691E</color>
+    <color name="colorG7">#1A237E</color>
+    <color name="colorGSharp7">#0D47A1</color>
+    <color name="colorA7">#212121</color>
+    <color name="colorASharp7">#3E2723</color>
+    <color name="colorB7">#004D40</color>
+
+
 </resources>

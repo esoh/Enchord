@@ -75,7 +75,8 @@ public class FretboardView extends View {
         //draw the frets
         fretboardPaint.setStrokeWidth(fretThickness);
         for(int i = 0; i < fretRatios.length; i++){
-            canvas.drawText((i+startFret)+"", (float)(w/2-3*d), (float)(midFretRatios[i] * fretboardHeight + textOffset + padding), fretNumberPaint);
+            float noteRadius = getResources().getDimensionPixelSize(R.dimen.note_radius);
+            canvas.drawText((i+startFret)+"", (float)(w/2-2.5*d) - noteRadius*2, (float)(midFretRatios[i] * fretboardHeight + textOffset + padding), fretNumberPaint);
             canvas.drawLine((float)(w/2-5*d/2)-stringThickness/2, (float)(fretRatios[i] * fretboardHeight + padding),
                             (float)(w/2+5*d/2)+stringThickness/2, (float)(fretRatios[i] * fretboardHeight + padding), fretboardPaint);
         }
