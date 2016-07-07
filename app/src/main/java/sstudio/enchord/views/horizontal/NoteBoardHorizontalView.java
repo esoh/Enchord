@@ -30,16 +30,16 @@ public class NoteBoardHorizontalView extends NoteBoardView {
             // check this string + capo
             // if no capo, use open notes
             if(capoPos < 0 &&
-                    ((notesToShowAll[openNotes[i]] == 1 && showOctaves) ||
-                            (notesToShowAll[openNotes[i]] == 2))){
+                    ((notesToShowAll[openNotes[i]] == 0) ||
+                     (notesToShowAll[openNotes[i]] != UNSET && showOctaves))){
                 float x = (float)(w/displayConstants.TOP_BOTTOM_PADDING_RATIO);
                 float y = (float) (h / 2 - h / displayConstants.STRING_DISTANCE_RATIO * (-i + 2.5));
                 int note = openNotes[i];
                 drawNoteString(x, y, note, canvas);
                 drawNote(x, y, note, canvas);
             } else if(capoPos >= 0 &&
-                    ((notesToShowAll[noteBoard[i][0] + capoPos] == 1 && showOctaves) ||
-                            (notesToShowAll[noteBoard[i][0] + capoPos] == 2))){
+                    ((notesToShowAll[noteBoard[i][0] + capoPos] == 0) ||
+                     (notesToShowAll[noteBoard[i][0] + capoPos] != UNSET && showOctaves))){
                 float x = (float) (midFretRatios[capoPos] * (w - 2 * w / displayConstants.TOP_BOTTOM_PADDING_RATIO) + w / displayConstants.TOP_BOTTOM_PADDING_RATIO);
                 float y = (float) (h / 2 - h / displayConstants.STRING_DISTANCE_RATIO * (-i + 2.5));
                 int note = noteBoard[i][0] + capoPos;
@@ -50,8 +50,8 @@ public class NoteBoardHorizontalView extends NoteBoardView {
             // check all notes along this string
             for(int j = 0; j < noteBoard[i].length; j++) {
                 if (j > capoPos &&
-                        ((notesToShowAll[noteBoard[i][j]] == 1 && showOctaves) ||
-                                (notesToShowAll[noteBoard[i][j]] == 2))) {
+                        ((notesToShowAll[noteBoard[i][j]] == 0) ||
+                         (notesToShowAll[noteBoard[i][j]] != UNSET && showOctaves))) {
                     float x = (float) (midFretRatios[j] * (w - 2 * w / displayConstants.TOP_BOTTOM_PADDING_RATIO) + w / displayConstants.TOP_BOTTOM_PADDING_RATIO);
                     float y = (float) (h / 2 - h / displayConstants.STRING_DISTANCE_RATIO * (-i + 2.5));
                     drawNote(x, y, noteBoard[i][j], canvas);

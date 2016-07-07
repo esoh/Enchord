@@ -7,7 +7,10 @@ import android.graphics.Paint;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+
+import java.util.Arrays;
 
 import sstudio.enchord.R;
 import sstudio.enchord.constants.displayConstants;
@@ -17,6 +20,7 @@ import sstudio.enchord.objects.Note;
  * Created by seanoh on 6/30/16.
  */
 public class NoteBoardView extends View {
+    protected final int UNSET = -11;
     protected int w, h;
     protected double[] fretRatios, midFretRatios;
     protected int[][] noteBoard;
@@ -25,7 +29,7 @@ public class NoteBoardView extends View {
     protected boolean showOctaves;
     protected int[] openNotes;
     protected int[] notesToShowAll;
-    protected Paint notePaint, noteInnerPaint, noteStringPaint, noteStringInnerPaint;
+    protected Paint notePaint, noteInnerPaint, noteStringPaint, noteStringInnerPaint, noteOctavePaint;
     protected int[][] noteColors;
     protected TextPaint noteTextPaint;
     protected float textOffset;
@@ -100,6 +104,7 @@ public class NoteBoardView extends View {
         noteTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         noteTextPaint.setTextAlign(Paint.Align.CENTER);
         noteTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.max_fret_font_size));
+        noteOctavePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2) - noteTextPaint.descent();
         capoPos = -1;
     }
@@ -113,16 +118,16 @@ public class NoteBoardView extends View {
             // check this string + capo
             // if no capo, use open notes
             if(capoPos < 0 &&
-                    ((notesToShowAll[openNotes[i]] == 1 && showOctaves) ||
-                     (notesToShowAll[openNotes[i]] == 2))){
+                    ((notesToShowAll[openNotes[i]] == 0) ||
+                     (notesToShowAll[openNotes[i]] != UNSET && showOctaves))){
                 float x = (float) (w / 2 - w / displayConstants.STRING_DISTANCE_RATIO * (i - 2.5));
                 float y = (float)(h/displayConstants.TOP_BOTTOM_PADDING_RATIO);
                 int note = openNotes[i];
                 drawNoteString(x, y, note, canvas);
                 drawNote(x, y, note, canvas);
             } else if(capoPos >= 0 &&
-                    ((notesToShowAll[noteBoard[i][0] + capoPos] == 1 && showOctaves) ||
-                    (notesToShowAll[noteBoard[i][0] + capoPos] == 2))){
+                    ((notesToShowAll[noteBoard[i][0] + capoPos] == 0) ||
+                     (notesToShowAll[noteBoard[i][0] + capoPos] != UNSET && showOctaves))){
                 float x = (float) (w / 2 - w / displayConstants.STRING_DISTANCE_RATIO * (i - 2.5));
                 float y = (float) (midFretRatios[capoPos] * (h - 2 * h / displayConstants.TOP_BOTTOM_PADDING_RATIO) + h / displayConstants.TOP_BOTTOM_PADDING_RATIO);
                 int note = noteBoard[i][0] + capoPos;
@@ -133,8 +138,8 @@ public class NoteBoardView extends View {
             // check all notes along this string
             for(int j = 0; j < noteBoard[i].length; j++) {
                 if (j > capoPos &&
-                        ((notesToShowAll[noteBoard[i][j]] == 1 && showOctaves) ||
-                                (notesToShowAll[noteBoard[i][j]] == 2))) {
+                        ((notesToShowAll[noteBoard[i][j]] == 0) ||
+                         (notesToShowAll[noteBoard[i][j]] != UNSET && showOctaves))) {
                     float x = (float) (w / 2 - w / displayConstants.STRING_DISTANCE_RATIO * (i - 2.5));
                     float y = (float) (midFretRatios[j] * (h - 2 * h / displayConstants.TOP_BOTTOM_PADDING_RATIO) + h / displayConstants.TOP_BOTTOM_PADDING_RATIO);
                     drawNote(x, y, noteBoard[i][j], canvas);
@@ -148,16 +153,24 @@ public class NoteBoardView extends View {
         notePaint.setColor(noteColors[type][note % 12]);
         canvas.drawCircle(x, y, noteRadius, notePaint);
 
-        if (notesToShowAll[note] == 1) {
+        if (notesToShowAll[note] != UNSET && notesToShowAll[note] != 0) {
             canvas.drawCircle(x, y, noteBorderInnerRadius, noteInnerPaint);
             noteTextPaint.setColor(noteColors[type][note % 12]);
         } else {
             noteTextPaint.setColor(Color.WHITE);
         }
 
+        Log.d("dimens", "center: (" + x + ", " + y + ")");
+        Log.d("dimens", "textOrigin: (" + x + ", " + (y + textOffset) + ")");
+
+        float textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2) - noteTextPaint.descent();
 
         canvas.drawText(Note.IDToNote(note, true).getShort(true) + "",
                 x, y + textOffset, noteTextPaint);
+
+        if (notesToShowAll[note] != UNSET && notesToShowAll[note] != 0) {
+            drawOctaves(notesToShowAll[note], x, y, noteBorderInnerRadius, textOffset, notePaint, canvas);
+        }
     }
 
     protected void drawNoteString(float x, float y, int note, Canvas canvas){
@@ -165,8 +178,28 @@ public class NoteBoardView extends View {
         noteStringPaint.setColor(noteColors[type][note % 12]);
         canvas.drawLine(x, y, x, (float)(h - h/displayConstants.TOP_BOTTOM_PADDING_RATIO + h/(displayConstants.FRET_THICKNESS_RATIO*3/2)), noteStringPaint);
 
-        if (notesToShowAll[note] == 1) {
+        if (notesToShowAll[note] != UNSET && notesToShowAll[note] != 0) {
             canvas.drawLine(x, y, x, (float)(h - h/displayConstants.TOP_BOTTOM_PADDING_RATIO + h/(displayConstants.FRET_THICKNESS_RATIO*3/2)), noteStringInnerPaint);
+        }
+    }
+
+    protected void drawOctaves(int octave, float noteX, float noteY, float radius, float textOffset, Paint paint, Canvas canvas){
+        float y;
+        if(octave < 0){
+            y = noteY + radius * .7f;
+        } else if(octave > 0){
+            y = noteY - radius * .7f;
+        } else {
+            return;
+        }
+        octave = Math.abs(octave);
+
+        //use the pythagorean theorem to calculate the distance from the y coordinate to the edge of the circle
+        float octaveChordDist = (float) (2f * (Math.sqrt(Math.pow(radius, 2) - Math.pow((radius * displayConstants.OCTAVE_DISPLAY_RADIUS_RATIO), 2))));
+
+        //draw the octave dots along the chord
+        for(float xPos = -octaveChordDist/2f + octaveChordDist/(octave + 1); xPos < octaveChordDist/2f; xPos += octaveChordDist/(octave + 1)){
+            canvas.drawCircle(noteX + xPos, y, textOffset/5, paint);
         }
     }
 
@@ -237,15 +270,17 @@ public class NoteBoardView extends View {
         invalidate();
     }
 
+    // if invalid, set to -6
     public void setNotes(boolean[] notesToShow){
+        Arrays.fill(notesToShowAll, UNSET);
         for(int i = 0; i < notesToShow.length; i++){
             if(notesToShow[i]){
                 for(int note = i%12; note < 132; note+=12) {
-                    if (notesToShowAll[note] != 2) {
-                        notesToShowAll[note] = 1;
+                    if(notesToShowAll[note] == UNSET || notesToShowAll[note] > 0){
+                        notesToShowAll[note] = (note - i)/12;
                     }
                 }
-                notesToShowAll[i] = 2;
+                notesToShowAll[i] = 0;
             }
         }
         invalidate();
