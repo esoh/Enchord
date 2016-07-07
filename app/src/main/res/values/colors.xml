@@ -6,6 +6,8 @@
     <color name="colorFretboard">#616161</color>
     <color name="colorBackground">#EEEEEE</color>
 
+    <color name="colorNeutral">#BDBDBD</color>
+
     <color name="colorC4">#FF8A65</color>
     <color name="colorCSharp4">#F06292</color>
     <color name="colorD4">#9575CD</color>

@@ -23,7 +23,7 @@ public class FretboardFragment extends Fragment {
     private int[][] fretboardNotes;
     private int capo; // position on the chart, NOT the fret # it's on
     private boolean[] notesToShow;
-    private boolean showOctaves;
+    private boolean showOctaves, showAll;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +64,7 @@ public class FretboardFragment extends Fragment {
         notesToShow[Note.noteToID('e', 0, 5)] = true;
         notesToShow[Note.noteToID('g', 0, 5)] = true;
         showOctaves = true;
+        showAll = true;
 
         // calculate fret ratios
         try {
@@ -94,6 +95,7 @@ public class FretboardFragment extends Fragment {
             mNoteBoard.setCapo(capo);
             mNoteBoard.setNotes(notesToShow);
             mNoteBoard.setShowOctaves(showOctaves);
+            mNoteBoard.setShowAll(showAll);
         }
         return rootView;
     }

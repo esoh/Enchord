@@ -29,32 +29,41 @@ public class NoteBoardHorizontalView extends NoteBoardView {
         for(int i = 0; i < noteBoard.length; i++){
             // check this string + capo
             // if no capo, use open notes
-            if(capoPos < 0 &&
-                    ((notesToShowAll[openNotes[i]] == 0) ||
-                     (notesToShowAll[openNotes[i]] != UNSET && showOctaves))){
-                float x = (float)(w/displayConstants.TOP_BOTTOM_PADDING_RATIO);
-                float y = (float) (h / 2 - h / displayConstants.STRING_DISTANCE_RATIO * (-i + 2.5));
-                int note = openNotes[i];
-                drawNoteString(x, y, note, canvas);
-                drawNote(x, y, note, canvas);
-            } else if(capoPos >= 0 &&
-                    ((notesToShowAll[noteBoard[i][0] + capoPos] == 0) ||
-                     (notesToShowAll[noteBoard[i][0] + capoPos] != UNSET && showOctaves))){
-                float x = (float) (midFretRatios[capoPos] * (w - 2 * w / displayConstants.TOP_BOTTOM_PADDING_RATIO) + w / displayConstants.TOP_BOTTOM_PADDING_RATIO);
-                float y = (float) (h / 2 - h / displayConstants.STRING_DISTANCE_RATIO * (-i + 2.5));
-                int note = noteBoard[i][0] + capoPos;
-                drawNoteString(x, y, note, canvas);
-                drawNote(x, y, note, canvas);
+            /* type:    -1:    show neutral note. showAll must be true.
+             *          0:     show colored wire note. showOctaves must be true.
+             *          1:     show colored full note. will always be true.
+             *          -2:    INVALID
+             */
+            int type;
+            if(capoPos < 0){
+                type = getType(notesToShowAll[openNotes[i]]);
+                if (type != -2) {
+                    float x = (float)(w/displayConstants.TOP_BOTTOM_PADDING_RATIO);
+                    float y = (float) (h / 2 - h / displayConstants.STRING_DISTANCE_RATIO * (-i + 2.5));
+                    int note = openNotes[i];
+                    drawNoteString(x, y, note, type, canvas);
+                    drawNote(x, y, note, type, canvas);
+                }
+            } else if(capoPos >= 0){
+                type = getType(notesToShowAll[noteBoard[i][0] + capoPos]);
+                if(type != -2) {
+                    float x = (float) (midFretRatios[capoPos] * (w - 2 * w / displayConstants.TOP_BOTTOM_PADDING_RATIO) + w / displayConstants.TOP_BOTTOM_PADDING_RATIO);
+                    float y = (float) (h / 2 - h / displayConstants.STRING_DISTANCE_RATIO * (-i + 2.5));
+                    int note = noteBoard[i][0] + capoPos;
+                    drawNoteString(x, y, note, type, canvas);
+                    drawNote(x, y, note, type, canvas);
+                }
             }
 
             // check all notes along this string
             for(int j = 0; j < noteBoard[i].length; j++) {
-                if (j > capoPos &&
-                        ((notesToShowAll[noteBoard[i][j]] == 0) ||
-                         (notesToShowAll[noteBoard[i][j]] != UNSET && showOctaves))) {
-                    float x = (float) (midFretRatios[j] * (w - 2 * w / displayConstants.TOP_BOTTOM_PADDING_RATIO) + w / displayConstants.TOP_BOTTOM_PADDING_RATIO);
-                    float y = (float) (h / 2 - h / displayConstants.STRING_DISTANCE_RATIO * (-i + 2.5));
-                    drawNote(x, y, noteBoard[i][j], canvas);
+                if (j > capoPos){
+                    type = getType((notesToShowAll[noteBoard[i][j]]));
+                    if(type != -2) {
+                        float x = (float) (midFretRatios[j] * (w - 2 * w / displayConstants.TOP_BOTTOM_PADDING_RATIO) + w / displayConstants.TOP_BOTTOM_PADDING_RATIO);
+                        float y = (float) (h / 2 - h / displayConstants.STRING_DISTANCE_RATIO * (-i + 2.5));
+                        drawNote(x, y, noteBoard[i][j], type, canvas);
+                    }
                 }
             }
         }
@@ -100,12 +109,15 @@ public class NoteBoardHorizontalView extends NoteBoardView {
     }
 
     @Override
-    protected void drawNoteString(float x, float y, int note, Canvas canvas) {
-        int type = getOctaveType(note);
-        noteStringPaint.setColor(noteColors[type][note % NUM_NOTES_OCTAVE]);
+    protected void drawNoteString(float x, float y, int note, int type, Canvas canvas) {
+        if(type == -1){
+            return;
+        }
+        int octaveType = getOctaveType(note);
+        noteStringPaint.setColor(noteColors[octaveType][note % NUM_NOTES_OCTAVE]);
         canvas.drawLine(x, y, (float)(w - w/displayConstants.TOP_BOTTOM_PADDING_RATIO + w/(displayConstants.FRET_THICKNESS_RATIO*3/2)), y, noteStringPaint);
 
-        if (notesToShowAll[note] == 1) {
+        if (type == 0) {
             canvas.drawLine(x, y, (float)(w - w/displayConstants.TOP_BOTTOM_PADDING_RATIO + w/(displayConstants.FRET_THICKNESS_RATIO*3/2)), y, noteStringInnerPaint);
         }
     }
