@@ -7,12 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import sstudio.enchord.R;
+import sstudio.enchord.constants.displayConstants;
 import sstudio.enchord.objects.Note;
 import sstudio.enchord.views.FretboardView;
 import sstudio.enchord.views.NoteBoardView;
 
 public class FretboardFragment extends Fragment {
-
+    private static final int NUM_NOTES_ALL = displayConstants.NUM_NOTES_OCTAVE * displayConstants.NUM_OCTAVE;
     //TODO: move to settings file
     private int startFret;// inclusive. standard: 1
     private int endFret;// not inclusive. standard: 20
@@ -58,7 +59,7 @@ public class FretboardFragment extends Fragment {
         //capo off = -1. if capo == 0, that means it's on the 1st visible fret row.
         capo = -1;
 
-        notesToShow = new boolean[132];
+        notesToShow = new boolean[NUM_NOTES_ALL];
         notesToShow[Note.noteToID('c', 0, 5)] = true;
         notesToShow[Note.noteToID('e', 0, 5)] = true;
         notesToShow[Note.noteToID('g', 0, 5)] = true;
@@ -100,7 +101,7 @@ public class FretboardFragment extends Fragment {
     /* calculates the ratios at which the frets are drawn
      * also calculates the ratios of the midpoints of the frets */
     private double[] getFretRatios(int numFrets) throws Exception {
-        if(startFret < 1 || endFret > 24){
+        if(startFret < 1 || endFret > displayConstants.MAX_FRET){
             throw new Exception("The frets must be between 1 and 24 (inclusive).");
         }
         if(startFret >= endFret){
@@ -110,10 +111,10 @@ public class FretboardFragment extends Fragment {
         double[] fretRatios = new double[numFrets];
         midFretRatios = new double[numFrets];
 
-        fretRatios[0] = 1/17.817;
+        fretRatios[0] = 1/displayConstants.NEXT_FRET_CONST;
         midFretRatios[0] = (0 + fretRatios[0])/2;
         for(int i = 1; i < numFrets; i++){
-            fretRatios[i] = (1 - fretRatios[i-1])/17.817 + fretRatios[i-1];
+            fretRatios[i] = (1 - fretRatios[i-1])/displayConstants.NEXT_FRET_CONST + fretRatios[i-1];
             midFretRatios[i] = (fretRatios[i-1] + fretRatios[i])/2;
         }
         //base the size off of the position of the last fret

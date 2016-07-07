@@ -21,6 +21,8 @@ import sstudio.enchord.objects.Note;
  */
 public class NoteBoardView extends View {
     protected final int UNSET = -11;
+    protected final int NUM_NOTES_OCTAVE = displayConstants.NUM_NOTES_OCTAVE;
+    protected final int NUM_OCTAVE = displayConstants.NUM_OCTAVE;
     protected int w, h;
     protected double[] fretRatios, midFretRatios;
     protected int[][] noteBoard;
@@ -38,7 +40,7 @@ public class NoteBoardView extends View {
     public NoteBoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        notesToShowAll = new int[132];
+        notesToShowAll = new int[NUM_NOTES_OCTAVE*NUM_OCTAVE];
 
         notePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         noteInnerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -47,7 +49,7 @@ public class NoteBoardView extends View {
         noteStringInnerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         noteStringInnerPaint.setColor(ContextCompat.getColor(context, R.color.colorBackground));
 
-        noteColors = new int[4][12];
+        noteColors = new int[4][NUM_NOTES_OCTAVE];
 
         noteColors[0][0] = ContextCompat.getColor(context, R.color.colorC4);
         noteColors[0][1] = ContextCompat.getColor(context, R.color.colorCSharp4);
@@ -150,18 +152,15 @@ public class NoteBoardView extends View {
 
     protected void drawNote(float x, float y, int note, Canvas canvas){
         int type = getOctaveType(note);
-        notePaint.setColor(noteColors[type][note % 12]);
+        notePaint.setColor(noteColors[type][note % NUM_NOTES_OCTAVE]);
         canvas.drawCircle(x, y, noteRadius, notePaint);
 
         if (notesToShowAll[note] != UNSET && notesToShowAll[note] != 0) {
             canvas.drawCircle(x, y, noteBorderInnerRadius, noteInnerPaint);
-            noteTextPaint.setColor(noteColors[type][note % 12]);
+            noteTextPaint.setColor(noteColors[type][note % NUM_NOTES_OCTAVE]);
         } else {
             noteTextPaint.setColor(Color.WHITE);
         }
-
-        Log.d("dimens", "center: (" + x + ", " + y + ")");
-        Log.d("dimens", "textOrigin: (" + x + ", " + (y + textOffset) + ")");
 
         float textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2) - noteTextPaint.descent();
 
@@ -175,7 +174,7 @@ public class NoteBoardView extends View {
 
     protected void drawNoteString(float x, float y, int note, Canvas canvas){
         int type = getOctaveType(note);
-        noteStringPaint.setColor(noteColors[type][note % 12]);
+        noteStringPaint.setColor(noteColors[type][note % NUM_NOTES_OCTAVE]);
         canvas.drawLine(x, y, x, (float)(h - h/displayConstants.TOP_BOTTOM_PADDING_RATIO + h/(displayConstants.FRET_THICKNESS_RATIO*3/2)), noteStringPaint);
 
         if (notesToShowAll[note] != UNSET && notesToShowAll[note] != 0) {
@@ -186,9 +185,9 @@ public class NoteBoardView extends View {
     protected void drawOctaves(int octave, float noteX, float noteY, float radius, float textOffset, Paint paint, Canvas canvas){
         float y;
         if(octave < 0){
-            y = noteY + radius * .7f;
+            y = noteY + radius * displayConstants.OCTAVE_DISPLAY_RADIUS_RATIO;
         } else if(octave > 0){
-            y = noteY - radius * .7f;
+            y = noteY - radius * displayConstants.OCTAVE_DISPLAY_RADIUS_RATIO;
         } else {
             return;
         }
@@ -220,18 +219,18 @@ public class NoteBoardView extends View {
             }
             if(lastFretDistRatio != 0) {
                 float fretDistDependant = (float)(lastFretDistRatio / 2 * (h - 2*(h/displayConstants.TOP_BOTTOM_PADDING_RATIO)) - h/(displayConstants.FRET_THICKNESS_RATIO*2) - minPadding);
-                float max = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)*5/6;
+                float max = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)*displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO;
                 float stringDistDependant = (float)((w/displayConstants.STRING_DISTANCE_RATIO) - minPadding)/2;
                 if(max >= fretDistDependant){
                     noteRadius = fretDistDependant;
-                    noteTextPaint.setTextSize(noteRadius * 6/5);
+                    noteTextPaint.setTextSize(noteRadius/displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
                 } else {
                     noteRadius = max;
                     noteTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.max_fret_font_size));
                 }
                 if(noteRadius > stringDistDependant){
                     noteRadius = stringDistDependant;
-                    noteTextPaint.setTextSize(noteRadius * 6/5);
+                    noteTextPaint.setTextSize(noteRadius/displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
                 }
                 textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2) - noteTextPaint.descent();
                 noteBorderInnerRadius = noteRadius - minPadding;
@@ -243,11 +242,11 @@ public class NoteBoardView extends View {
     }
 
     protected int getOctaveType(int note){
-        if (note > 12 * 6) {
+        if (note > NUM_NOTES_OCTAVE * 6) {
             return 0;
-        } else if (note > 12 * 5) {
+        } else if (note > NUM_NOTES_OCTAVE * 5) {
             return 1;
-        } else if (note > 12 * 4) {
+        } else if (note > NUM_NOTES_OCTAVE * 4) {
             return 2;
         } else {
             return 3;
@@ -275,9 +274,9 @@ public class NoteBoardView extends View {
         Arrays.fill(notesToShowAll, UNSET);
         for(int i = 0; i < notesToShow.length; i++){
             if(notesToShow[i]){
-                for(int note = i%12; note < 132; note+=12) {
+                for(int note = i%NUM_NOTES_OCTAVE; note < NUM_NOTES_OCTAVE*NUM_OCTAVE; note+=NUM_NOTES_OCTAVE) {
                     if(notesToShowAll[note] == UNSET || notesToShowAll[note] > 0){
-                        notesToShowAll[note] = (note - i)/12;
+                        notesToShowAll[note] = (note - i)/NUM_NOTES_OCTAVE;
                     }
                 }
                 notesToShowAll[i] = 0;

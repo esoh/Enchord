@@ -79,18 +79,18 @@ public class NoteBoardHorizontalView extends NoteBoardView {
             }
             if(lastFretDistRatio != 0) {
                 float fretDistDependant = (float)(lastFretDistRatio / 2 * (w - 2*(w/displayConstants.TOP_BOTTOM_PADDING_RATIO)) - w/(displayConstants.FRET_THICKNESS_RATIO*2) - minPadding);
-                float max = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)*5/6;
+                float max = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)*displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO;
                 float stringDistDependant = (float)((h/displayConstants.STRING_DISTANCE_RATIO) - minPadding)/2;
                 if(max >= fretDistDependant){
                     noteRadius = fretDistDependant;
-                    noteTextPaint.setTextSize(noteRadius * 6/5);
+                    noteTextPaint.setTextSize(noteRadius/displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
                 } else {
                     noteRadius = max;
                     noteTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.max_fret_font_size));
                 }
                 if(noteRadius > stringDistDependant){
                     noteRadius = stringDistDependant;
-                    noteTextPaint.setTextSize(noteRadius * 6/5);
+                    noteTextPaint.setTextSize(noteRadius/displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
                 }
                 textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2) - noteTextPaint.descent();
                 noteBorderInnerRadius = noteRadius - minPadding;
@@ -102,7 +102,7 @@ public class NoteBoardHorizontalView extends NoteBoardView {
     @Override
     protected void drawNoteString(float x, float y, int note, Canvas canvas) {
         int type = getOctaveType(note);
-        noteStringPaint.setColor(noteColors[type][note % 12]);
+        noteStringPaint.setColor(noteColors[type][note % NUM_NOTES_OCTAVE]);
         canvas.drawLine(x, y, (float)(w - w/displayConstants.TOP_BOTTOM_PADDING_RATIO + w/(displayConstants.FRET_THICKNESS_RATIO*3/2)), y, noteStringPaint);
 
         if (notesToShowAll[note] == 1) {
