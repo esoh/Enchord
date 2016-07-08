@@ -57,7 +57,7 @@ public class FretboardFragment extends Fragment {
             default:
         }
         //capo off = -1. if capo == 0, that means it's on the 1st visible fret row.
-        capo = -1;
+        capo = 2;
 
         notesToShow = new boolean[NUM_NOTES_ALL];
         notesToShow[Note.noteToID('c', 0, 5)] = true;
@@ -85,6 +85,7 @@ public class FretboardFragment extends Fragment {
         if(mFretboard != null) {
             mFretboard.setFretRange(startFret, endFret);
             mFretboard.setFretRatios(fretRatios, midFretRatios);
+            mFretboard.setNumStrings(numStrings);
         }
 
         NoteBoardView mNoteBoard = (NoteBoardView) rootView.findViewById(R.id.note_board);

@@ -27,18 +27,13 @@ public class FretboardHorizontalView extends FretboardView {
         if(fretRatios == null){
             return;
         }
-
-        int stringThickness = h/displayConstants.STRING_THICKNESS_RATIO;
-        int fretThickness = w/displayConstants.FRET_THICKNESS_RATIO;
         fretboardPaint.setStrokeWidth(stringThickness);
-        double d = h/displayConstants.STRING_DISTANCE_RATIO; // proportion of screen width
-        double padding = w/displayConstants.TOP_BOTTOM_PADDING_RATIO; // proportion of screen w
-        double fretboardHeight = w - 2 * padding;
 
         // draw the guitar strings
-        for(int i = 0; i < 6; i++){
-            canvas.drawLine((float) padding, (float)(h/2-d*(i-2.5)),
-                            (float) (w - padding), (float)(h/2-d*(i-2.5)), fretboardPaint);
+        for(int i = 0; i < numStrings; i++){
+            canvas.drawLine(verticalFretboardPadding, horizontalFretboardPadding + i * stringBtwnDist,
+                            w-verticalFretboardPadding, horizontalFretboardPadding + i * stringBtwnDist,
+                            fretboardPaint);
         }
 
         //draw the first fret
@@ -47,15 +42,35 @@ public class FretboardHorizontalView extends FretboardView {
         } else {
             fretboardPaint.setStrokeWidth(fretThickness);
         }
-        canvas.drawLine((float) padding, (float) (h/2-2.5*d)-stringThickness/2,
-                        (float) padding, (float) (h/2+2.5*d)+stringThickness/2, fretboardPaint);
+        canvas.drawLine(verticalFretboardPadding, horizontalFretboardPadding - (stringThickness/2f),
+                        verticalFretboardPadding, horizontalFretboardPadding + (stringThickness/2f) + fretboardWidth, fretboardPaint);
 
         //draw the frets
         fretboardPaint.setStrokeWidth(fretThickness);
         for(int i = 0; i < fretRatios.length; i++){
-            canvas.drawText((startFret+i)+"", (float)(midFretRatios[i] * fretboardHeight + padding), (float)(h/2+3.25*d) + textOffset, fretNumberPaint);
-            canvas.drawLine((float)(fretRatios[i] * fretboardHeight + padding), (float)(h /2-5*d/2)-stringThickness/2,
-                            (float)(fretRatios[i] * fretboardHeight + padding), (float)(h /2+5*d/2)+stringThickness/2,  fretboardPaint);
+            float noteRadius = getResources().getDimensionPixelSize(R.dimen.note_radius);
+            canvas.drawText((i+startFret)+"", (float)(midFretRatios[i] * fretboardHeight + verticalFretboardPadding),
+                            fretboardWidth + horizontalFretboardPadding + noteRadius*2 + textOffset, fretNumberPaint);
+            canvas.drawLine((float)(fretRatios[i] * fretboardHeight + verticalFretboardPadding),
+                            horizontalFretboardPadding - (stringThickness/2f),
+                            (float)(fretRatios[i] * fretboardHeight + verticalFretboardPadding),
+                            horizontalFretboardPadding + fretboardWidth + (stringThickness/2f),fretboardPaint);
+        }
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        this.stringThickness = h/displayConstants.STRING_THICKNESS_RATIO;
+        this.fretThickness = w/displayConstants.FRET_THICKNESS_RATIO;
+        this.verticalFretboardPadding = w/displayConstants.TOP_BOTTOM_PADDING_RATIO; // proportion of fretboard height
+        this.fretboardHeight = w - 2 * verticalFretboardPadding;
+        this.fretboardWidth = w/displayConstants.FRETBOARD_WIDTH_RATIO;
+        this.horizontalFretboardPadding = (h - fretboardWidth)/2f;
+        if(numStrings-1 == 0){
+            this.stringBtwnDist = -1;
+        } else {
+            this.stringBtwnDist = fretboardWidth / (numStrings - 1);
         }
     }
 }
