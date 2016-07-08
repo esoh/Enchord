@@ -4,10 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import java.util.Arrays;
@@ -18,20 +18,31 @@ import sstudio.enchord.objects.Note;
 
 /**
  * Created by seanoh on 6/30/16.
+ *
+ * important vars:
+ *      int type: describes the type of drawing that should be made.
+ *          DRAW_MATCH              matches a requested note: draw the full note
+ *          DRAW_MATCH_OCTAVE       matches an octave of the requested note AND showOctaves is true: draw octave note
+ *          DRAW_NO_MATCH           none of the above, but showAll is true: draw neutral note.
+ *          DRAW_INVALID            invalid, none of the above: draw nothing.
  */
 public class NoteBoardView extends View {
     protected final int UNSET = -11;
     protected final int NUM_NOTES_OCTAVE = displayConstants.NUM_NOTES_OCTAVE;
     protected final int NUM_OCTAVE = displayConstants.NUM_OCTAVE;
+    protected final int MIN_PADDING = getResources().getDimensionPixelSize(R.dimen.one_sp);
+    protected final int DRAW_MATCH = 1;
+    protected final int DRAW_MATCH_OCTAVE = 0;
+    protected final int DRAW_NO_MATCH = -1;
+    protected final int DRAW_INVALID = -2;
     protected int w, h;
     protected double[] fretRatios, midFretRatios;
     protected int[][] noteBoard;
-    protected int minPadding = getResources().getDimensionPixelSize(R.dimen.one_sp);
     protected float noteRadius, noteBorderInnerRadius;
     protected boolean showOctaves, showAll;
     protected int[] openNotes;
     protected int[] notesToShowAll;
-    protected Paint notePaint, noteInnerPaint, noteStringPaint, noteStringInnerPaint, noteOctavePaint;
+    protected Paint notePaint, noteInnerPaint, noteStringPaint, noteStringInnerPaint, noteOctavePaint, noteAccidentalPaint;
     protected int[][] noteColors;
     protected int noteNeutralColor;
     protected TextPaint noteTextPaint;
@@ -41,6 +52,7 @@ public class NoteBoardView extends View {
     protected float verticalFretboardPadding, horizontalFretboardPadding;
     protected float fretboardWidth, fretboardHeight;
     protected float stringBtwnDist;
+    protected Path border;
 
     public NoteBoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -114,10 +126,13 @@ public class NoteBoardView extends View {
         noteTextPaint.setTextAlign(Paint.Align.CENTER);
         noteTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.max_fret_font_size));
         noteOctavePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        noteAccidentalPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        border = new Path();
         textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2f) - noteTextPaint.descent();
         capoPos = -1;
     }
 
+    // description: handles the drawing of notes to display on the fretboard.
     @Override
     protected void onDraw(Canvas canvas) {
         if(midFretRatios == null || noteBoard == null || openNotes == null || fretboardHeight == 0){
@@ -126,16 +141,12 @@ public class NoteBoardView extends View {
         for(int i = 0; i < noteBoard.length; i++){
             // color the strings if necessary
             // if no capo, use open notes
-            /* type:    -1:    show neutral note. showAll must be true.
-             *          0:     show colored wire note. showOctaves must be true.
-             *          1:     show colored full note. will always be true.
-             *          -2:    INVALID
-             */
+            // see class description for more info on type
             int type;
             //capo unset? draw note at nut then color strings
             if(capoPos < 0){
                 type = getType(notesToShowAll[openNotes[i]]);
-                if (type != -2) {
+                if (type != DRAW_INVALID) {
                     float x = fretboardWidth + horizontalFretboardPadding - i * stringBtwnDist;
                     float y = verticalFretboardPadding;
                     int note = openNotes[i];
@@ -145,7 +156,7 @@ public class NoteBoardView extends View {
             //capo set? draw note at capo then color strings
             } else if(capoPos >= 0){
                 type = getType(notesToShowAll[noteBoard[i][0] + capoPos]);
-                if(type != -2) {
+                if(type != DRAW_INVALID) {
                     float x = fretboardWidth + horizontalFretboardPadding - i * stringBtwnDist;
                     float y = (float) (midFretRatios[capoPos] * fretboardHeight + verticalFretboardPadding);
                     int note = noteBoard[i][0] + capoPos;
@@ -158,7 +169,7 @@ public class NoteBoardView extends View {
             for(int j = 0; j < noteBoard[i].length; j++) {
                 if (j > capoPos){
                     type = getType((notesToShowAll[noteBoard[i][j]]));
-                    if(type != -2) {
+                    if(type != DRAW_INVALID) {
                         float x = fretboardWidth + horizontalFretboardPadding - i * stringBtwnDist;
                         float y = (float) (midFretRatios[j] * fretboardHeight + verticalFretboardPadding);
                         drawNote(x, y, noteBoard[i][j], type, canvas);
@@ -168,29 +179,42 @@ public class NoteBoardView extends View {
         }
     }
 
-    protected int getType(int note){
-        if(note == 0){
-            return 1;
-        } else if(note != UNSET && showOctaves){
-            return 0;
+    /* description: gets the type of note to draw
+     * int noteValue:
+     *      0 if directly matches requested note
+     *      UNSET if does not match requested note or its octaves
+     *      else, represents the number of octaves from a requested note
+     *
+     *
+     * return type:
+     *      DRAW_MATCH          if note is a requested note
+     *      DRAW_MATCH_OCTAVE   if note is an octave of requested note and showOctaves is turned on
+     *      DRAW_NO_MATCH       if note is none of the above but show all notes is turned on
+     *      DRAW_INVALID        if none of the above.
+     */
+    protected int getType(int noteValue){
+        if(noteValue == 0){
+            return DRAW_MATCH;
+        } else if(noteValue != UNSET && showOctaves){
+            return DRAW_MATCH_OCTAVE;
         } else if(showAll){
-            return -1;
+            return DRAW_NO_MATCH;
         } else {
-            return -2;
+            return DRAW_INVALID;
         }
     }
 
     /* description: draws a note at x,y.
      *
      * int note: ID representation [0,132)
-     * int type: type representation:
-     *     -1       draw neutral outline note.
-     *     0        draw colored outline note.
-     *     1        draw colored full note.
      */
     protected void drawNote(float x, float y, int note, int type, Canvas canvas){
-        if(type < -1 || type > 1){
+        // check for valid
+        if(type == DRAW_INVALID){
             return;
+        }
+        if(type != DRAW_MATCH_OCTAVE && type != DRAW_MATCH && type != DRAW_NO_MATCH){
+            throw new IllegalArgumentException("Unknown draw id [-2, 1]: " + type);
         }
 
         // which octave is this note in
@@ -231,19 +255,80 @@ public class NoteBoardView extends View {
         }
     }
 
+    // draws the sharp accidental.
+    protected void drawSharp(float x, float y, float width, float height, Canvas canvas){
+        // draw the 2 vertical lines
+        noteAccidentalPaint.setStyle(Paint.Style.STROKE);
+        noteAccidentalPaint.setStrokeWidth(width * displayConstants.SHARP_VERTICAL_LINE_THICKNESS_RATIO);
+        canvas.drawLine(x + width * displayConstants.SHARP_VERTICAL_LINE_POS_RATIO,
+                y + height * (1 - displayConstants.SHARP_VERTICAL_LINE_HEIGHT_RATIO),
+                x + width * displayConstants.SHARP_VERTICAL_LINE_POS_RATIO,
+                y + height,
+                noteAccidentalPaint);
+
+        canvas.drawLine(x + width * (1  - displayConstants.SHARP_VERTICAL_LINE_POS_RATIO),
+                y,
+                x + width * (1 - displayConstants.SHARP_VERTICAL_LINE_POS_RATIO),
+                y + height * displayConstants.SHARP_VERTICAL_LINE_HEIGHT_RATIO,
+                noteAccidentalPaint);
+
+        // draw the 2 horizontal lines
+        noteAccidentalPaint.setStyle(Paint.Style.FILL);
+        border.reset();
+        // start top left corner-> top right -> bottom right -> bottom left
+        border.moveTo(x, y + height * (displayConstants.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.lineTo(x + width,
+                y + height * (displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.lineTo(x + width,
+                y + height * (displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO + displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.lineTo(x,
+                y + height * (displayConstants.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO + displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.close();
+        canvas.drawPath(border, noteAccidentalPaint);
+
+        border.reset();
+        border.moveTo(x, y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.lineTo(x + width,
+                y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.lineTo(x + width,
+                y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO + displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.lineTo(x,
+                y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO + displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.close();
+        canvas.drawPath(border, noteAccidentalPaint);
+    }
+
+    //draws the flat accidental.
+    protected void drawFlat(float x, float y, float width, float height, Canvas canvas){
+
+    }
+
+    /* highlights the string
+     *
+     * int note: ID representation [0,132)
+     */
     protected void drawNoteString(float x, float y, int note, int type, Canvas canvas){
-        if(type == -1){
+        // check for valid
+        if(type == DRAW_INVALID || type == DRAW_NO_MATCH){
             return;
         }
+        if(type != DRAW_MATCH_OCTAVE && type != DRAW_MATCH){
+            throw new IllegalArgumentException("Unknown draw id [-2, 1]: " + type);
+        }
+
         int octaveType = getOctaveType(note);
         noteStringPaint.setColor(noteColors[octaveType][note % NUM_NOTES_OCTAVE]);
         canvas.drawLine(x, y, x, h - verticalFretboardPadding + fretThickness/2f, noteStringPaint);
 
-        if (type == 0) {
+        if (type == DRAW_MATCH_OCTAVE) {
             canvas.drawLine(x, y, x, h - verticalFretboardPadding, noteStringInnerPaint);
         }
     }
 
+    /* draws octaves on the circle note
+     *
+     * int octave: number of octaves away from requested note
+     */
     protected void drawOctaves(int octave, float noteX, float noteY, float radius, float textOffset, Paint paint, Canvas canvas){
         float y;
         if(octave < 0){
@@ -283,7 +368,7 @@ public class NoteBoardView extends View {
             this.stringBtwnDist = fretboardWidth / (noteBoard.length - 1);
         }
         noteStringPaint.setStrokeWidth(stringThickness*displayConstants.STRING_BOLD_RATIO);
-        noteStringInnerPaint.setStrokeWidth(stringThickness*displayConstants.STRING_BOLD_RATIO - minPadding);
+        noteStringInnerPaint.setStrokeWidth(stringThickness*displayConstants.STRING_BOLD_RATIO - MIN_PADDING);
 
         // set the size of the notes to account for fret length and string distance
         if(fretRatios != null){
@@ -294,9 +379,9 @@ public class NoteBoardView extends View {
                 lastFretDistRatio = fretRatios[0];
             }
             if(lastFretDistRatio != 0) {
-                float fretDistDependant = (float)(lastFretDistRatio / 2f * fretboardHeight - fretThickness/2f - minPadding);
+                float fretDistDependant = (float)(lastFretDistRatio / 2f * fretboardHeight - fretThickness/2f - MIN_PADDING);
                 float max = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)*displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO;
-                float stringDistDependant = (stringBtwnDist - minPadding)/2f;
+                float stringDistDependant = (stringBtwnDist - MIN_PADDING)/2f;
                 if(max >= fretDistDependant){
                     noteRadius = fretDistDependant;
                     noteTextPaint.setTextSize(noteRadius/displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
@@ -309,7 +394,7 @@ public class NoteBoardView extends View {
                     noteTextPaint.setTextSize(noteRadius/displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
                 }
                 textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2f) - noteTextPaint.descent();
-                noteBorderInnerRadius = noteRadius - minPadding;
+                noteBorderInnerRadius = noteRadius - MIN_PADDING;
             }
         }
 
@@ -317,6 +402,15 @@ public class NoteBoardView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
+    /* returns the shade of the note it should draw, to be used with noteColors
+     * int note: ID representation [0, 132)
+     *
+     * return:
+     *      0   if note is in the 6th octave or higher
+     *      1   if note is in the 5th octave
+     *      2   if note is in the 4th octave
+     *      3   if note is in the 3rd octave or lower
+     */
     protected int getOctaveType(int note){
         if (note > NUM_NOTES_OCTAVE * 6) {
             return 0;
@@ -333,7 +427,7 @@ public class NoteBoardView extends View {
         this.fretRatios = fretRatios;
         this.midFretRatios = midFretRatios;
         this.noteRadius = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)*5/6;
-        this.noteBorderInnerRadius = noteRadius - minPadding;
+        this.noteBorderInnerRadius = noteRadius - MIN_PADDING;
     }
 
     public void setNoteBoard(int[][] noteBoard){
@@ -345,7 +439,7 @@ public class NoteBoardView extends View {
         invalidate();
     }
 
-    // if invalid, set to -6
+    // if invalid, set to UNSET
     public void setNotes(boolean[] notesToShow){
         Arrays.fill(notesToShowAll, UNSET);
         for(int i = 0; i < notesToShow.length; i++){

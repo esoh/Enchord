@@ -22,4 +22,12 @@ public final class displayConstants {
     public static final float FRETBOARD_WIDTH_RATIO = 5.2f; // ratio of fretboard width : height
     public static final float STRING_BOLD_RATIO = 1.5f;
     public static final float MAX_FRETBOARD_WIDTH_RATIO = 1.45f; // max ratio of fretboard width to screen if current is too big
+
+    // drawing the sharp
+    public static final float SHARP_VERTICAL_LINE_HEIGHT_RATIO = 0.954545f; // sharp's vertical line size in proportion to accidental height
+    public static final float SHARP_VERTICAL_LINE_POS_RATIO = 0.2625f; // sharp's horizontal positioning of vertical line from closest x bound
+    public static final float SHARP_VERTICAL_LINE_THICKNESS_RATIO = 0.1f; // sharp's vertical line thickness in proportion to width
+    public static final float SHARP_HORIZONTAL_LINE_THICKNESS_RATIO = 0.13636f; // sharp's horizontal line thickness in proportion to height
+    public static final float SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO = 0.36363f; // sharp's upper horizontal line lower slant position in proportion to height
+    public static final float SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO = 0.25454f; // sharp's upper horizontal line upper slant position in proportion to height
 }
