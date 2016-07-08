@@ -273,6 +273,9 @@ public class NoteBoardView extends View {
         this.verticalFretboardPadding = h/displayConstants.TOP_BOTTOM_PADDING_RATIO; // proportion of fretboard height
         this.fretboardHeight = h - 2 * verticalFretboardPadding;
         this.fretboardWidth = h/displayConstants.FRETBOARD_WIDTH_RATIO;
+        if(fretboardWidth * displayConstants.MAX_FRETBOARD_WIDTH_RATIO > w){
+            fretboardWidth = w/displayConstants.MAX_FRETBOARD_WIDTH_RATIO;
+        }
         this.horizontalFretboardPadding = (w - fretboardWidth)/2f;
         if(noteBoard.length-1 == 0){
             this.stringBtwnDist = -1;

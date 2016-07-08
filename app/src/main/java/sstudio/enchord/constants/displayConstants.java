@@ -21,4 +21,5 @@ public final class displayConstants {
     public static final float FONT_SIZE_TO_NOTE_RADIUS_RATIO = 5f/6; //ratio of font size to note radius.
     public static final float FRETBOARD_WIDTH_RATIO = 5.2f; // ratio of fretboard width : height
     public static final float STRING_BOLD_RATIO = 1.5f;
+    public static final float MAX_FRETBOARD_WIDTH_RATIO = 1.45f; // max ratio of fretboard width to screen if current is too big
 }

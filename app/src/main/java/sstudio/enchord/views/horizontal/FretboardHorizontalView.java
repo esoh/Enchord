@@ -66,6 +66,9 @@ public class FretboardHorizontalView extends FretboardView {
         this.verticalFretboardPadding = w/displayConstants.TOP_BOTTOM_PADDING_RATIO; // proportion of fretboard height
         this.fretboardHeight = w - 2 * verticalFretboardPadding;
         this.fretboardWidth = w/displayConstants.FRETBOARD_WIDTH_RATIO;
+        if(fretboardWidth * displayConstants.MAX_FRETBOARD_WIDTH_RATIO > h){
+            fretboardWidth = h/displayConstants.MAX_FRETBOARD_WIDTH_RATIO;
+        }
         this.horizontalFretboardPadding = (h - fretboardWidth)/2f;
         if(numStrings-1 == 0){
             this.stringBtwnDist = -1;
