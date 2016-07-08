@@ -287,13 +287,13 @@ public class NoteBoardView extends View {
         canvas.drawPath(border, noteAccidentalPaint);
 
         border.reset();
-        border.moveTo(x, y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.moveTo(x, y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
         border.lineTo(x + width,
-                y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+                y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
         border.lineTo(x + width,
-                y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO + displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
-        border.lineTo(x,
                 y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO + displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.lineTo(x,
+                y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO + displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
         border.close();
         canvas.drawPath(border, noteAccidentalPaint);
     }
