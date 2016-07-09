@@ -1,5 +1,7 @@
 package sstudio.enchord.objects;
 
+import sstudio.enchord.constants.displayConstants;
+
 /**
  * Created by seanoh on 6/30/16.
  *
@@ -21,6 +23,7 @@ public class Note {
     // full id of the note [0,132)
     private int noteId;
 
+    // calculate fields given the given parameters
     public Note(char note, int accidental, int octave){
         char lowerCaseNote = Character.toLowerCase(note);
         switch(lowerCaseNote){
@@ -29,7 +32,7 @@ public class Note {
                     octave--;
                     note = 'b';
                     accidental = 0;
-                    noteId = 11;
+                    noteId = displayConstants.NUM_NOTES_OCTAVE - 1;
                 } else {
                     noteId = 0;
                 }
@@ -68,7 +71,7 @@ public class Note {
                     accidental = 0;
                     noteId = 0;
                 } else {
-                    noteId = 11;
+                    noteId = displayConstants.NUM_NOTES_OCTAVE - 1;
                 }
                 break;
             default:
@@ -86,21 +89,21 @@ public class Note {
             default:
                 throw new IllegalArgumentException("Invalid accidental (-1, 0, or 1): " + accidental);
         }
-        if(octave < 0 || octave > 10){
+        if(octave < 0 || octave > displayConstants.NUM_OCTAVE - 1){
             throw new IllegalArgumentException("Octave must be between 0 and 10: " + octave);
         }
         this.note = note;
         this.accidental = accidental;
         this.octave = octave;
-        this.noteId += octave*12;
+        this.noteId += octave* displayConstants.NUM_NOTES_OCTAVE;
     }
 
     public Note(int id, boolean sharps){
-        if(id < 0 || id > 132){
+        if(id < 0 || id > displayConstants.NUM_OCTAVE * displayConstants.NUM_NOTES_OCTAVE){
             throw new IllegalArgumentException("Id must be in [0, 132): " + id);
         }
-        octave = id/12;
-        int sNoteId = id%12;
+        octave = id/displayConstants.NUM_NOTES_OCTAVE;
+        int sNoteId = id%displayConstants.NUM_NOTES_OCTAVE;
         switch (sNoteId){
             case 1:
             case 3:
@@ -176,22 +179,6 @@ public class Note {
 
     public int getAccidental() {
         return accidental;
-    }
-
-    public String getShort(boolean sharps) {
-        Note temp = new Note(noteId, sharps);
-        String toReturn = Character.toUpperCase(note) + "";
-        switch(temp.getAccidental()){
-            case -1:
-                toReturn += "b";
-                break;
-            case 0:
-                break;
-            case 1:
-                toReturn += "#";
-                break;
-        }
-        return toReturn;
     }
 
     public char getNoteUpperCase() {
