@@ -30,4 +30,22 @@ public final class displayConstants {
     public static final float SHARP_HORIZONTAL_LINE_THICKNESS_RATIO = 0.13636f; // sharp's horizontal line thickness in proportion to height
     public static final float SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO = 0.36363f; // sharp's upper horizontal line lower slant position in proportion to height
     public static final float SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO = 0.25454f; // sharp's upper horizontal line upper slant position in proportion to height
+
+    // drawing the flat
+    public static final float FLAT_VERTICAL_LINE_HEIGHT_RATIO = 0.95f; // flat's vertical line size in proportion to accidental height
+    public static final float FLAT_VERTICAL_LINE_THICKNESS_TOP_RATIO = 0.121951f; // flat's vertical line thickness at the top in proportion to accidental width
+    public static final float FLAT_VERTICAL_LINE_THICKNESS_BOTTOM_RATIO = 0.08f; // flat's vertical line thickness at the bottom in proportion to accidental width
+    public static final float FLAT_ROUND_START_OUTER_Y_RATIO = 0.57943925233f; // flat's rounded line start position (outer edge) in proportion to accidental height
+    public static final float FLAT_ROUND_START_INNER_Y_RATIO = 0.644859f;// flat's rounded line start position (inner edge) in proportion to accidental height
+    public static final float FLAT_ROUND_END_INNER_Y_RATIO = 0.9345794f;// flat's rounded line start position (outer edge) in proportion to accidental height
+    public static final float FLAT_ROUND_OUTER_CUBIC_UPPER_X_RATIO = 0.2f;// flat's rounded line cubic upper coordinate's x ratio to width
+    public static final float FLAT_ROUND_OUTER_CUBIC_UPPER_Y_RATIO = 0.3f;// flat's rounded line cubic upper coordinate's y ratio to height
+    public static final float FLAT_ROUND_OUTER_CUBIC_LOWER_X_RATIO = 2.12f;// flat's rounded line cubic lower coordinate's x ratio to width
+    public static final float FLAT_ROUND_OUTER_CUBIC_LOWER_Y_RATIO = 0.5f;// flat's rounded line cubic lower coordinate's y ratio to height
+
+    public static final float FLAT_ROUND_INNER_CUBIC_UPPER_X_RATIO = 0.5f;// flat's rounded line cubic upper coordinate's x ratio to width
+    public static final float FLAT_ROUND_INNER_CUBIC_UPPER_Y_RATIO = 0.3f;// flat's rounded line cubic upper coordinate's y ratio to height
+    public static final float FLAT_ROUND_INNER_CUBIC_LOWER_X_RATIO = 1.2f;// flat's rounded line cubic lower coordinate's x ratio to width
+    public static final float FLAT_ROUND_INNER_CUBIC_LOWER_Y_RATIO = 0.7f;// flat's rounded line cubic lower coordinate's y ratio to height
+
 }

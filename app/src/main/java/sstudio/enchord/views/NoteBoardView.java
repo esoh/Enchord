@@ -300,7 +300,30 @@ public class NoteBoardView extends View {
 
     //draws the flat accidental.
     protected void drawFlat(float x, float y, float width, float height, Canvas canvas){
+        noteAccidentalPaint.setStyle(Paint.Style.FILL);
+        border.reset();
+        border.moveTo(x + width * displayConstants.FLAT_VERTICAL_LINE_THICKNESS_TOP_RATIO, y);
+        border.lineTo(x, y);
+        border.lineTo(x, y + height * displayConstants.FLAT_VERTICAL_LINE_HEIGHT_RATIO);
+        border.lineTo(x + width * displayConstants.FLAT_VERTICAL_LINE_THICKNESS_BOTTOM_RATIO, y + height * displayConstants.FLAT_VERTICAL_LINE_HEIGHT_RATIO);
+        border.close();
+        canvas.drawPath(border, noteAccidentalPaint);
 
+        border.reset();
+        border.moveTo(x, y + height * displayConstants.FLAT_ROUND_START_OUTER_Y_RATIO);
+        border.cubicTo(x + width * displayConstants.FLAT_ROUND_OUTER_CUBIC_UPPER_X_RATIO,
+                y + height * displayConstants.FLAT_ROUND_OUTER_CUBIC_UPPER_Y_RATIO,
+                x + width * displayConstants.FLAT_ROUND_OUTER_CUBIC_LOWER_X_RATIO,
+                y + height * displayConstants.FLAT_ROUND_OUTER_CUBIC_LOWER_Y_RATIO,
+                x, y + height);
+        border.lineTo(x, y + height * displayConstants.FLAT_ROUND_END_INNER_Y_RATIO);
+        border.cubicTo(x + width * displayConstants.FLAT_ROUND_INNER_CUBIC_LOWER_X_RATIO,
+                y + height * displayConstants.FLAT_ROUND_INNER_CUBIC_LOWER_Y_RATIO,
+                x + width * displayConstants.FLAT_ROUND_INNER_CUBIC_UPPER_X_RATIO,
+                y + height * displayConstants.FLAT_ROUND_INNER_CUBIC_UPPER_Y_RATIO,
+                x, y + height * displayConstants.FLAT_ROUND_START_INNER_Y_RATIO);
+        border.close();
+        canvas.drawPath(border, noteAccidentalPaint);
     }
 
     /* highlights the string
