@@ -53,6 +53,7 @@ public class NoteBoardView extends View {
     protected float fretboardWidth, fretboardHeight;
     protected float stringBtwnDist;
     protected Path border;
+    protected boolean sharps;
 
     public NoteBoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -237,17 +238,35 @@ public class NoteBoardView extends View {
         switch(type){
             case -1:
                 noteTextPaint.setColor(noteNeutralColor);
+                noteAccidentalPaint.setColor(noteNeutralColor);
                 break;
             case 0:
                 noteTextPaint.setColor(noteColors[octaveType][note % NUM_NOTES_OCTAVE]);
+                noteAccidentalPaint.setColor(noteColors[octaveType][note % NUM_NOTES_OCTAVE]);
                 break;
             case 1:
                 noteTextPaint.setColor(Color.WHITE);
+                noteAccidentalPaint.setColor(Color.WHITE);
+                break;
         }
 
         // draw the text
-        float textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2f) - noteTextPaint.descent();
-        canvas.drawText(Note.IDToNote(note, true).getShort(true) + "", x, y + textOffset, noteTextPaint);
+        Note tempNote = Note.IDToNote(note, sharps);
+        if(tempNote.getAccidental() != 0){
+            float height = 2 * textOffset;
+            float width = height * displayConstants.ACCIDENTAL_WIDTH_RATIO;
+            float accidentalX = (noteTextPaint.measureText(tempNote.getNoteUpperCase() + "") - width)/2;
+
+            if(tempNote.getAccidental() == 1){
+                drawSharp(x + accidentalX, y - textOffset, width, height, canvas);
+            } else {
+                drawFlat(x + accidentalX, y - textOffset, width, height, canvas);
+            }
+
+            canvas.drawText(tempNote.getNoteUpperCase()+"", x - width/2, y + textOffset, noteTextPaint);
+        } else {
+            canvas.drawText(tempNote.getNoteUpperCase()+"", x, y + textOffset, noteTextPaint);
+        }
 
         // show octaves if type is colored outline note
         if(type == 0){
@@ -490,6 +509,11 @@ public class NoteBoardView extends View {
 
     public void setOpenNotes(int[] openNotes) {
         this.openNotes = openNotes;
+        invalidate();
+    }
+
+    public void setSharps(boolean sharps){
+        this.sharps = sharps;
         invalidate();
     }
 }

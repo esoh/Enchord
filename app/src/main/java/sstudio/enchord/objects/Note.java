@@ -12,9 +12,13 @@ package sstudio.enchord.objects;
  */
 public class Note {
     //Scientific pitch notation. middle C is octave
+    //character of the basic note
     private char note;
+    // accidental: -1 for flat, 0 for natural, 1 for sharp.
     private int accidental;
+    //octave of the note
     private int octave;
+    // full id of the note [0,132)
     private int noteId;
 
     public Note(char note, int accidental, int octave){
@@ -188,6 +192,10 @@ public class Note {
                 break;
         }
         return toReturn;
+    }
+
+    public char getNoteUpperCase() {
+        return Character.toUpperCase(note);
     }
 
     @Override

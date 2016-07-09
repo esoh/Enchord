@@ -23,18 +23,21 @@ public final class displayConstants {
     public static final float STRING_BOLD_RATIO = 1.5f;
     public static final float MAX_FRETBOARD_WIDTH_RATIO = 1.45f; // max ratio of fretboard width to screen if current is too big
 
+    // drawing the accidental
+    public static final float ACCIDENTAL_WIDTH_RATIO = .4f; // accidental's width in proportion to accidental height
+
     // drawing the sharp
     public static final float SHARP_VERTICAL_LINE_HEIGHT_RATIO = 0.954545f; // sharp's vertical line size in proportion to accidental height
     public static final float SHARP_VERTICAL_LINE_POS_RATIO = 0.2625f; // sharp's horizontal positioning of vertical line from closest x bound
-    public static final float SHARP_VERTICAL_LINE_THICKNESS_RATIO = 0.1f; // sharp's vertical line thickness in proportion to width
+    public static final float SHARP_VERTICAL_LINE_THICKNESS_RATIO = 0.2f; // sharp's vertical line thickness in proportion to width
     public static final float SHARP_HORIZONTAL_LINE_THICKNESS_RATIO = 0.13636f; // sharp's horizontal line thickness in proportion to height
     public static final float SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO = 0.36363f; // sharp's upper horizontal line lower slant position in proportion to height
     public static final float SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO = 0.25454f; // sharp's upper horizontal line upper slant position in proportion to height
 
     // drawing the flat
     public static final float FLAT_VERTICAL_LINE_HEIGHT_RATIO = 0.95f; // flat's vertical line size in proportion to accidental height
-    public static final float FLAT_VERTICAL_LINE_THICKNESS_TOP_RATIO = 0.121951f; // flat's vertical line thickness at the top in proportion to accidental width
-    public static final float FLAT_VERTICAL_LINE_THICKNESS_BOTTOM_RATIO = 0.08f; // flat's vertical line thickness at the bottom in proportion to accidental width
+    public static final float FLAT_VERTICAL_LINE_THICKNESS_TOP_RATIO = 0.3f; // flat's vertical line thickness at the top in proportion to accidental width
+    public static final float FLAT_VERTICAL_LINE_THICKNESS_BOTTOM_RATIO = 0.13f; // flat's vertical line thickness at the bottom in proportion to accidental width
     public static final float FLAT_ROUND_START_OUTER_Y_RATIO = 0.57943925233f; // flat's rounded line start position (outer edge) in proportion to accidental height
     public static final float FLAT_ROUND_START_INNER_Y_RATIO = 0.644859f;// flat's rounded line start position (inner edge) in proportion to accidental height
     public static final float FLAT_ROUND_END_INNER_Y_RATIO = 0.9345794f;// flat's rounded line start position (outer edge) in proportion to accidental height
