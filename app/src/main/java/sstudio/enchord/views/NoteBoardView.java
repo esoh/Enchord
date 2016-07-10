@@ -54,6 +54,7 @@ public class NoteBoardView extends View {
     protected float stringBtwnDist;
     protected Path border;
     protected boolean sharps;
+    protected int startFret, endFret;
 
     public NoteBoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -130,7 +131,7 @@ public class NoteBoardView extends View {
         noteAccidentalPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         border = new Path();
         textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2f) - noteTextPaint.descent();
-        capoPos = -1;
+        capoPos = 0;
     }
 
     // description: handles the drawing of notes to display on the fretboard.
@@ -144,23 +145,23 @@ public class NoteBoardView extends View {
             // if no capo, use open notes
             // see class description for more info on type
             int type;
-            //capo unset? draw note at nut then color strings
-            if(capoPos < 0){
-                type = getType(notesToShowAll[openNotes[i]]);
+            //capo unset or at a fret that's not visible? draw note at the first fret line then color strings
+            if(capoPos < startFret){
+                type = getType(notesToShowAll[openNotes[i] + capoPos]);
                 if (type != DRAW_INVALID) {
                     float x = fretboardWidth + horizontalFretboardPadding - i * stringBtwnDist;
                     float y = verticalFretboardPadding;
-                    int note = openNotes[i];
+                    int note = openNotes[i] + capoPos;
                     drawNoteString(x, y, note, type, canvas);
                     drawNote(x, y, note, type, canvas);
                 }
             //capo set? draw note at capo then color strings
-            } else if(capoPos >= 0){
-                type = getType(notesToShowAll[noteBoard[i][0] + capoPos]);
+            } else if(capoPos >= startFret){
+                type = getType(notesToShowAll[openNotes[i] + capoPos]);
                 if(type != DRAW_INVALID) {
                     float x = fretboardWidth + horizontalFretboardPadding - i * stringBtwnDist;
-                    float y = (float) (midFretRatios[capoPos] * fretboardHeight + verticalFretboardPadding);
-                    int note = noteBoard[i][0] + capoPos;
+                    float y = (float) (midFretRatios[capoPos - startFret] * fretboardHeight + verticalFretboardPadding);
+                    int note = openNotes[i] + capoPos;
                     drawNoteString(x, y, note, type, canvas);
                     drawNote(x, y, note, type, canvas);
                 }
@@ -168,7 +169,7 @@ public class NoteBoardView extends View {
 
             // check all notes along this string
             for(int j = 0; j < noteBoard[i].length; j++) {
-                if (j > capoPos){
+                if (j > capoPos - startFret){
                     type = getType((notesToShowAll[noteBoard[i][j]]));
                     if(type != DRAW_INVALID) {
                         float x = fretboardWidth + horizontalFretboardPadding - i * stringBtwnDist;
@@ -472,17 +473,13 @@ public class NoteBoardView extends View {
         this.noteBorderInnerRadius = noteRadius - MIN_PADDING;
     }
 
-    public void setNoteBoard(int[][] noteBoard){
-        this.noteBoard = noteBoard;
-    }
-
     public void setCapo(int capoPos){
         this.capoPos = capoPos;
         invalidate();
     }
 
     // if invalid, set to UNSET
-    public void setNotes(boolean[] notesToShow){
+    public void showNotes(boolean[] notesToShow){
         Arrays.fill(notesToShowAll, UNSET);
         for(int i = 0; i < notesToShow.length; i++){
             if(notesToShow[i]){
@@ -507,8 +504,16 @@ public class NoteBoardView extends View {
         invalidate();
     }
 
-    public void setOpenNotes(int[] openNotes) {
+    public void setNoteBoard(int[] openNotes, int startFret, int endFret){
+        noteBoard = new int[openNotes.length][endFret-startFret];
+        for(int i = 0; i < openNotes.length; i++){
+            for(int j = 0; j < endFret-startFret; j++){
+                noteBoard[i][j] = openNotes[i] + startFret + j;
+            }
+        }
         this.openNotes = openNotes;
+        this.startFret = startFret;
+        this.endFret = endFret;
         invalidate();
     }
 

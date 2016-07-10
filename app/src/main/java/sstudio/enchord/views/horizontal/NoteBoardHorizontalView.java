@@ -22,37 +22,35 @@ public class NoteBoardHorizontalView extends NoteBoardView {
         if(midFretRatios == null || noteBoard == null || openNotes == null){
             return;
         }
-        for(int i = 0; i < noteBoard.length; i++){
-            // check this string + capo
-            // if no capo, use open notes
+        for(int i = 0; i < noteBoard.length; i++) {
             int type;
-            if(capoPos < 0){
-                type = getType(notesToShowAll[openNotes[i]]);
+            if (capoPos < startFret) {
+                type = getType(notesToShowAll[openNotes[i] + capoPos]);
                 if (type != DRAW_INVALID) {
                     float x = verticalFretboardPadding;
-                    float y = horizontalFretboardPadding + i*stringBtwnDist;
-                    int note = openNotes[i];
+                    float y = horizontalFretboardPadding + i * stringBtwnDist;
+                    int note = openNotes[i] + capoPos;
                     drawNoteString(x, y, note, type, canvas);
                     drawNote(x, y, note, type, canvas);
                 }
-            } else if(capoPos >= 0){
-                type = getType(notesToShowAll[noteBoard[i][0] + capoPos]);
-                if(type != DRAW_INVALID) {
-                    float x = (float) (midFretRatios[capoPos] * fretboardHeight + verticalFretboardPadding);
-                    float y = horizontalFretboardPadding + i*stringBtwnDist;
-                    int note = noteBoard[i][0] + capoPos;
+            } else if (capoPos >= startFret) {
+                type = getType(notesToShowAll[openNotes[i] + capoPos]);
+                if (type != DRAW_INVALID) {
+                    float x = (float) (midFretRatios[capoPos - startFret] * fretboardHeight + verticalFretboardPadding);
+                    float y = horizontalFretboardPadding + i * stringBtwnDist;
+                    int note = openNotes[i] + capoPos;
                     drawNoteString(x, y, note, type, canvas);
                     drawNote(x, y, note, type, canvas);
                 }
             }
 
             // check all notes along this string
-            for(int j = 0; j < noteBoard[i].length; j++) {
-                if (j > capoPos){
+            for (int j = 0; j < noteBoard[i].length; j++) {
+                if (j > capoPos - startFret) {
                     type = getType((notesToShowAll[noteBoard[i][j]]));
-                    if(type != DRAW_INVALID) {
+                    if (type != DRAW_INVALID) {
                         float x = (float) (midFretRatios[j] * fretboardHeight + verticalFretboardPadding);
-                        float y = horizontalFretboardPadding + i*stringBtwnDist;
+                        float y = horizontalFretboardPadding + i * stringBtwnDist;
                         drawNote(x, y, noteBoard[i][j], type, canvas);
                     }
                 }

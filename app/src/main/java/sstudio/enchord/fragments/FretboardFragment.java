@@ -20,7 +20,6 @@ public class FretboardFragment extends Fragment {
     private int numStrings;
     private double[] fretRatios, midFretRatios;
     private int[] openNotes;
-    private int[][] fretboardNotes;
     private int capo; // position on the chart, NOT the fret # it's on
     private boolean[] notesToShow;
     private boolean showOctaves, showAll, sharps;
@@ -56,8 +55,8 @@ public class FretboardFragment extends Fragment {
                 break;
             default:
         }
-        //capo off = -1. if capo == 0, that means it's on the 1st visible fret row.
-        capo = -1;
+        //capo off = 0. if capo == 1, that means it's on the 1st fret.
+        capo = 0;
 
         notesToShow = new boolean[NUM_NOTES_ALL];
         notesToShow[Note.noteToID('c', 0, 5)] = true;
@@ -74,14 +73,6 @@ public class FretboardFragment extends Fragment {
             e.printStackTrace();
         }
 
-        // add fretboard notes
-        fretboardNotes = new int[numStrings][endFret-startFret];
-        for(int i = 0; i < numStrings; i++){
-            for(int j = 0; j < endFret-startFret; j++){
-                fretboardNotes[i][j] = openNotes[i] + startFret + j;
-            }
-        }
-
         FretboardView mFretboard = (FretboardView) rootView.findViewById(R.id.fretboard);
         if(mFretboard != null) {
             mFretboard.setFretRange(startFret, endFret);
@@ -91,11 +82,10 @@ public class FretboardFragment extends Fragment {
 
         NoteBoardView mNoteBoard = (NoteBoardView) rootView.findViewById(R.id.note_board);
         if(mNoteBoard != null) {
-            mNoteBoard.setOpenNotes(openNotes);
             mNoteBoard.setFretRatios(fretRatios, midFretRatios);
-            mNoteBoard.setNoteBoard(fretboardNotes);
+            mNoteBoard.setNoteBoard(openNotes, startFret, endFret);
             mNoteBoard.setCapo(capo);
-            mNoteBoard.setNotes(notesToShow);
+            mNoteBoard.showNotes(notesToShow);
             mNoteBoard.setShowOctaves(showOctaves);
             mNoteBoard.setShowAll(showAll);
             mNoteBoard.setSharps(sharps);
