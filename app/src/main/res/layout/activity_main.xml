@@ -14,9 +14,24 @@
         android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="50"/>
-    <FrameLayout
+    <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="0dp"
-        android:layout_weight="50"/>
+        android:layout_weight="50"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <Switch
+            android:id="@+id/show_all_notes_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show all notes" />
+
+        <Switch
+            android:id="@+id/show_octaves_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show octaves" />
+    </LinearLayout>
 
 </LinearLayout>
