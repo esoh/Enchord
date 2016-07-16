@@ -1,6 +1,6 @@
 package sstudio.enchord.fragments;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +24,7 @@ public class FretboardFragment extends Fragment{
     private int capo; // position on the chart, NOT the fret # it's on
     private boolean[] notesToShow;
     private boolean showOctaves, showAll, sharps;
+    private NoteBoardView mNoteBoard;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,8 +64,8 @@ public class FretboardFragment extends Fragment{
         notesToShow[Note.noteToID('c', 0, 5)] = true;
         notesToShow[Note.noteToID('e', 0, 5)] = true;
         notesToShow[Note.noteToID('g', 0, 5)] = true;
-        showOctaves = true;
-        showAll = true;
+        //showOctaves = true;
+        //showAll = true;
         sharps = true;
 
         // calculate fret ratios
@@ -86,7 +87,8 @@ public class FretboardFragment extends Fragment{
             mCapo.setFretRatios(fretRatios, midFretRatios);
         }
 
-        NoteBoardView mNoteBoard = (NoteBoardView) rootView.findViewById(R.id.note_board);
+        mNoteBoard = (NoteBoardView) rootView.findViewById(R.id.note_board);
+
         if(mNoteBoard != null) {
             mNoteBoard.setFretRatios(fretRatios, midFretRatios);
             mNoteBoard.setNoteBoard(openNotes, startFret, endFret);
@@ -98,6 +100,14 @@ public class FretboardFragment extends Fragment{
         }
 
         return rootView;
+    }
+
+    public void setShowAllNotes(boolean show){
+        mNoteBoard.setShowAll(show);
+    }
+
+    public void setShowOctaves(boolean show){
+        mNoteBoard.setShowOctaves(show);
     }
 
     /* calculates the ratios at which the frets are drawn
