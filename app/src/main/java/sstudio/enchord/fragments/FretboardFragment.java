@@ -7,13 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import sstudio.enchord.R;
-import sstudio.enchord.constants.displayConstants;
+import sstudio.enchord.constants.Dimens;
 import sstudio.enchord.objects.Note;
+import sstudio.enchord.views.CapoView;
 import sstudio.enchord.views.FretboardView;
 import sstudio.enchord.views.NoteBoardView;
 
-public class FretboardFragment extends Fragment {
-    private static final int NUM_NOTES_ALL = displayConstants.NUM_NOTES_OCTAVE * displayConstants.NUM_OCTAVE;
+public class FretboardFragment extends Fragment{
+    private static final int NUM_NOTES_ALL = Dimens.NUM_NOTES_OCTAVE * Dimens.NUM_OCTAVE;
     //TODO: move to settings file
     private int startFret;// inclusive. standard: 1
     private int endFret;// not inclusive. standard: 20
@@ -80,6 +81,11 @@ public class FretboardFragment extends Fragment {
             mFretboard.setNumStrings(numStrings);
         }
 
+        CapoView mCapo = (CapoView) rootView.findViewById(R.id.capo);
+        if(mCapo != null){
+            mCapo.setFretRatios(fretRatios, midFretRatios);
+        }
+
         NoteBoardView mNoteBoard = (NoteBoardView) rootView.findViewById(R.id.note_board);
         if(mNoteBoard != null) {
             mNoteBoard.setFretRatios(fretRatios, midFretRatios);
@@ -90,13 +96,14 @@ public class FretboardFragment extends Fragment {
             mNoteBoard.setShowAll(showAll);
             mNoteBoard.setSharps(sharps);
         }
+
         return rootView;
     }
 
     /* calculates the ratios at which the frets are drawn
      * also calculates the ratios of the midpoints of the frets */
     private double[] getFretRatios(int numFrets) throws Exception {
-        if(startFret < 1 || endFret > displayConstants.MAX_FRET){
+        if(startFret < 1 || endFret > Dimens.MAX_FRET){
             throw new Exception("The frets must be between 1 and 24 (inclusive).");
         }
         if(startFret >= endFret){
@@ -106,10 +113,10 @@ public class FretboardFragment extends Fragment {
         double[] fretRatios = new double[numFrets];
         midFretRatios = new double[numFrets];
 
-        fretRatios[0] = 1/displayConstants.NEXT_FRET_CONST;
+        fretRatios[0] = 1/ Dimens.NEXT_FRET_CONST;
         midFretRatios[0] = (0 + fretRatios[0])/2;
         for(int i = 1; i < numFrets; i++){
-            fretRatios[i] = (1 - fretRatios[i-1])/displayConstants.NEXT_FRET_CONST + fretRatios[i-1];
+            fretRatios[i] = (1 - fretRatios[i-1])/ Dimens.NEXT_FRET_CONST + fretRatios[i-1];
             midFretRatios[i] = (fretRatios[i-1] + fretRatios[i])/2;
         }
         //base the size off of the position of the last fret

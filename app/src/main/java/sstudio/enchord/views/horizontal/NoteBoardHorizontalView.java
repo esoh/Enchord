@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 
 import sstudio.enchord.R;
-import sstudio.enchord.constants.displayConstants;
+import sstudio.enchord.constants.Dimens;
 import sstudio.enchord.views.NoteBoardView;
 
 /**
@@ -64,13 +64,13 @@ public class NoteBoardHorizontalView extends NoteBoardView {
 
         this.w = w;
         this.h = h;
-        this.stringThickness = h/displayConstants.STRING_THICKNESS_RATIO;
-        this.fretThickness = w/displayConstants.FRET_THICKNESS_RATIO;
-        this.verticalFretboardPadding = w/displayConstants.TOP_BOTTOM_PADDING_RATIO; // proportion of fretboard height
+        this.stringThickness = h/ Dimens.STRING_THICKNESS_RATIO;
+        this.fretThickness = w/ Dimens.FRET_THICKNESS_RATIO;
+        this.verticalFretboardPadding = w/ Dimens.TOP_BOTTOM_PADDING_RATIO; // proportion of fretboard height
         this.fretboardHeight = w - 2 * verticalFretboardPadding;
-        this.fretboardWidth = w/displayConstants.FRETBOARD_WIDTH_RATIO;
-        if(fretboardWidth * displayConstants.MAX_FRETBOARD_WIDTH_RATIO > h){
-            fretboardWidth = h/displayConstants.MAX_FRETBOARD_WIDTH_RATIO;
+        this.fretboardWidth = w/ Dimens.FRETBOARD_WIDTH_RATIO;
+        if(fretboardWidth * Dimens.MAX_FRETBOARD_WIDTH_RATIO > h){
+            fretboardWidth = h/ Dimens.MAX_FRETBOARD_WIDTH_RATIO;
         }
         this.horizontalFretboardPadding = (h - fretboardWidth)/2f;
         if(noteBoard.length-1 == 0){
@@ -78,8 +78,8 @@ public class NoteBoardHorizontalView extends NoteBoardView {
         } else {
             this.stringBtwnDist = fretboardWidth / (noteBoard.length - 1);
         }
-        noteStringPaint.setStrokeWidth(stringThickness*displayConstants.STRING_BOLD_RATIO);
-        noteStringInnerPaint.setStrokeWidth(stringThickness*displayConstants.STRING_BOLD_RATIO - MIN_PADDING);
+        noteStringPaint.setStrokeWidth(stringThickness* Dimens.STRING_BOLD_RATIO);
+        noteStringInnerPaint.setStrokeWidth(stringThickness* Dimens.STRING_BOLD_RATIO - MIN_PADDING);
 
         // set the size of the notes to account for fret length and string distance
         if(fretRatios != null){
@@ -91,18 +91,18 @@ public class NoteBoardHorizontalView extends NoteBoardView {
             }
             if(lastFretDistRatio != 0) {
                 float fretDistDependant = (float)(lastFretDistRatio / 2f * fretboardHeight - fretThickness/2f - MIN_PADDING);
-                float max = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)*displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO;
+                float max = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)* Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO;
                 float stringDistDependant = (stringBtwnDist - MIN_PADDING)/2f;
                 if(max >= fretDistDependant){
                     noteRadius = fretDistDependant;
-                    noteTextPaint.setTextSize(noteRadius/displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
+                    noteTextPaint.setTextSize(noteRadius/ Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
                 } else {
                     noteRadius = max;
                     noteTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.max_fret_font_size));
                 }
                 if(noteRadius > stringDistDependant){
                     noteRadius = stringDistDependant;
-                    noteTextPaint.setTextSize(noteRadius/displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
+                    noteTextPaint.setTextSize(noteRadius/ Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
                 }
                 textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2f) - noteTextPaint.descent();
                 noteBorderInnerRadius = noteRadius - MIN_PADDING;

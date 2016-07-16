@@ -3,13 +3,13 @@ package sstudio.enchord.constants;
 /**
  * Created by seanoh on 7/5/16.
  */
-public final class displayConstants {
-    private displayConstants(){ }
+public final class Dimens {
+    private Dimens() {}
 
     //thickness of the string as a proportion of fretboard width
-    public static final int STRING_THICKNESS_RATIO = 120;
+    public static final float STRING_THICKNESS_RATIO = 120;
     //thickness of the fret as a proportion of fretboard height
-    public static final int FRET_THICKNESS_RATIO = 250;
+    public static final float FRET_THICKNESS_RATIO = 250;
     //length of the padding to the fretboard (top and bottom) as a proportion of fretboard height
     public static final float TOP_BOTTOM_PADDING_RATIO = 23.1f;
     //proportion of the note radius at which to display the octave information
@@ -50,5 +50,4 @@ public final class displayConstants {
     public static final float FLAT_ROUND_INNER_CUBIC_UPPER_Y_RATIO = 0.3f;// flat's rounded line cubic upper coordinate's y ratio to height
     public static final float FLAT_ROUND_INNER_CUBIC_LOWER_X_RATIO = 1.2f;// flat's rounded line cubic lower coordinate's x ratio to width
     public static final float FLAT_ROUND_INNER_CUBIC_LOWER_Y_RATIO = 0.7f;// flat's rounded line cubic lower coordinate's y ratio to height
-
 }

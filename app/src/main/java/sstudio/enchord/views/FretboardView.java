@@ -8,7 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
-import sstudio.enchord.constants.displayConstants;
+import sstudio.enchord.constants.Dimens;
 
 import sstudio.enchord.R;
 
@@ -91,13 +91,13 @@ public class FretboardView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         this.w = w;
         this.h = h;
-        this.stringThickness = w/displayConstants.STRING_THICKNESS_RATIO;
-        this.fretThickness = h/displayConstants.FRET_THICKNESS_RATIO;
-        this.verticalFretboardPadding = h/displayConstants.TOP_BOTTOM_PADDING_RATIO; // proportion of fretboard height
+        this.stringThickness = w/ Dimens.STRING_THICKNESS_RATIO;
+        this.fretThickness = h/ Dimens.FRET_THICKNESS_RATIO;
+        this.verticalFretboardPadding = h/ Dimens.TOP_BOTTOM_PADDING_RATIO; // proportion of fretboard height
         this.fretboardHeight = h - 2 * verticalFretboardPadding;
-        this.fretboardWidth = h/displayConstants.FRETBOARD_WIDTH_RATIO;
-        if(fretboardWidth * displayConstants.MAX_FRETBOARD_WIDTH_RATIO > w){
-            fretboardWidth = w/displayConstants.MAX_FRETBOARD_WIDTH_RATIO;
+        this.fretboardWidth = h/ Dimens.FRETBOARD_WIDTH_RATIO;
+        if(fretboardWidth * Dimens.MAX_FRETBOARD_WIDTH_RATIO > w){
+            fretboardWidth = w/ Dimens.MAX_FRETBOARD_WIDTH_RATIO;
         }
 
         this.horizontalFretboardPadding = (w - fretboardWidth)/2f;

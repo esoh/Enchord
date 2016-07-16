@@ -13,7 +13,7 @@ import android.view.View;
 import java.util.Arrays;
 
 import sstudio.enchord.R;
-import sstudio.enchord.constants.displayConstants;
+import sstudio.enchord.constants.Dimens;
 import sstudio.enchord.objects.Note;
 
 /**
@@ -28,8 +28,8 @@ import sstudio.enchord.objects.Note;
  */
 public class NoteBoardView extends View {
     protected final int UNSET = -11;
-    protected final int NUM_NOTES_OCTAVE = displayConstants.NUM_NOTES_OCTAVE;
-    protected final int NUM_OCTAVE = displayConstants.NUM_OCTAVE;
+    protected final int NUM_NOTES_OCTAVE = Dimens.NUM_NOTES_OCTAVE;
+    protected final int NUM_OCTAVE = Dimens.NUM_OCTAVE;
     protected final int MIN_PADDING = getResources().getDimensionPixelSize(R.dimen.one_sp);
     protected final int DRAW_MATCH = 1;
     protected final int DRAW_MATCH_OCTAVE = 0;
@@ -255,7 +255,7 @@ public class NoteBoardView extends View {
         Note tempNote = Note.IDToNote(note, sharps);
         if(tempNote.getAccidental() != 0){
             float height = 2 * textOffset;
-            float width = height * displayConstants.ACCIDENTAL_WIDTH_RATIO;
+            float width = height * Dimens.ACCIDENTAL_WIDTH_RATIO;
             float accidentalX = (noteTextPaint.measureText(tempNote.getNoteUpperCase() + "") - width)/2;
 
             if(tempNote.getAccidental() == 1){
@@ -279,41 +279,41 @@ public class NoteBoardView extends View {
     protected void drawSharp(float x, float y, float width, float height, Canvas canvas){
         // draw the 2 vertical lines
         noteAccidentalPaint.setStyle(Paint.Style.STROKE);
-        noteAccidentalPaint.setStrokeWidth(width * displayConstants.SHARP_VERTICAL_LINE_THICKNESS_RATIO);
-        canvas.drawLine(x + width * displayConstants.SHARP_VERTICAL_LINE_POS_RATIO,
-                y + height * (1 - displayConstants.SHARP_VERTICAL_LINE_HEIGHT_RATIO),
-                x + width * displayConstants.SHARP_VERTICAL_LINE_POS_RATIO,
+        noteAccidentalPaint.setStrokeWidth(width * Dimens.SHARP_VERTICAL_LINE_THICKNESS_RATIO);
+        canvas.drawLine(x + width * Dimens.SHARP_VERTICAL_LINE_POS_RATIO,
+                y + height * (1 - Dimens.SHARP_VERTICAL_LINE_HEIGHT_RATIO),
+                x + width * Dimens.SHARP_VERTICAL_LINE_POS_RATIO,
                 y + height,
                 noteAccidentalPaint);
 
-        canvas.drawLine(x + width * (1  - displayConstants.SHARP_VERTICAL_LINE_POS_RATIO),
+        canvas.drawLine(x + width * (1  - Dimens.SHARP_VERTICAL_LINE_POS_RATIO),
                 y,
-                x + width * (1 - displayConstants.SHARP_VERTICAL_LINE_POS_RATIO),
-                y + height * displayConstants.SHARP_VERTICAL_LINE_HEIGHT_RATIO,
+                x + width * (1 - Dimens.SHARP_VERTICAL_LINE_POS_RATIO),
+                y + height * Dimens.SHARP_VERTICAL_LINE_HEIGHT_RATIO,
                 noteAccidentalPaint);
 
         // draw the 2 horizontal lines
         noteAccidentalPaint.setStyle(Paint.Style.FILL);
         border.reset();
         // start top left corner-> top right -> bottom right -> bottom left
-        border.moveTo(x, y + height * (displayConstants.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.moveTo(x, y + height * (Dimens.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO - Dimens.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
         border.lineTo(x + width,
-                y + height * (displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+                y + height * (Dimens.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO - Dimens.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
         border.lineTo(x + width,
-                y + height * (displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO + displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+                y + height * (Dimens.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO + Dimens.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
         border.lineTo(x,
-                y + height * (displayConstants.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO + displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+                y + height * (Dimens.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO + Dimens.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
         border.close();
         canvas.drawPath(border, noteAccidentalPaint);
 
         border.reset();
-        border.moveTo(x, y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+        border.moveTo(x, y + height * (1 - Dimens.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO - Dimens.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
         border.lineTo(x + width,
-                y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO - displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+                y + height * (1 - Dimens.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO - Dimens.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
         border.lineTo(x + width,
-                y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO + displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+                y + height * (1 - Dimens.SHARP_HORIZONTAL_LINE_LOWER_POS_RATIO + Dimens.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
         border.lineTo(x,
-                y + height * (1 - displayConstants.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO + displayConstants.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
+                y + height * (1 - Dimens.SHARP_HORIZONTAL_LINE_UPPER_POS_RATIO + Dimens.SHARP_HORIZONTAL_LINE_THICKNESS_RATIO/2f));
         border.close();
         canvas.drawPath(border, noteAccidentalPaint);
     }
@@ -322,26 +322,26 @@ public class NoteBoardView extends View {
     protected void drawFlat(float x, float y, float width, float height, Canvas canvas){
         noteAccidentalPaint.setStyle(Paint.Style.FILL);
         border.reset();
-        border.moveTo(x + width * displayConstants.FLAT_VERTICAL_LINE_THICKNESS_TOP_RATIO, y);
+        border.moveTo(x + width * Dimens.FLAT_VERTICAL_LINE_THICKNESS_TOP_RATIO, y);
         border.lineTo(x, y);
-        border.lineTo(x, y + height * displayConstants.FLAT_VERTICAL_LINE_HEIGHT_RATIO);
-        border.lineTo(x + width * displayConstants.FLAT_VERTICAL_LINE_THICKNESS_BOTTOM_RATIO, y + height * displayConstants.FLAT_VERTICAL_LINE_HEIGHT_RATIO);
+        border.lineTo(x, y + height * Dimens.FLAT_VERTICAL_LINE_HEIGHT_RATIO);
+        border.lineTo(x + width * Dimens.FLAT_VERTICAL_LINE_THICKNESS_BOTTOM_RATIO, y + height * Dimens.FLAT_VERTICAL_LINE_HEIGHT_RATIO);
         border.close();
         canvas.drawPath(border, noteAccidentalPaint);
 
         border.reset();
-        border.moveTo(x, y + height * displayConstants.FLAT_ROUND_START_OUTER_Y_RATIO);
-        border.cubicTo(x + width * displayConstants.FLAT_ROUND_OUTER_CUBIC_UPPER_X_RATIO,
-                y + height * displayConstants.FLAT_ROUND_OUTER_CUBIC_UPPER_Y_RATIO,
-                x + width * displayConstants.FLAT_ROUND_OUTER_CUBIC_LOWER_X_RATIO,
-                y + height * displayConstants.FLAT_ROUND_OUTER_CUBIC_LOWER_Y_RATIO,
+        border.moveTo(x, y + height * Dimens.FLAT_ROUND_START_OUTER_Y_RATIO);
+        border.cubicTo(x + width * Dimens.FLAT_ROUND_OUTER_CUBIC_UPPER_X_RATIO,
+                y + height * Dimens.FLAT_ROUND_OUTER_CUBIC_UPPER_Y_RATIO,
+                x + width * Dimens.FLAT_ROUND_OUTER_CUBIC_LOWER_X_RATIO,
+                y + height * Dimens.FLAT_ROUND_OUTER_CUBIC_LOWER_Y_RATIO,
                 x, y + height);
-        border.lineTo(x, y + height * displayConstants.FLAT_ROUND_END_INNER_Y_RATIO);
-        border.cubicTo(x + width * displayConstants.FLAT_ROUND_INNER_CUBIC_LOWER_X_RATIO,
-                y + height * displayConstants.FLAT_ROUND_INNER_CUBIC_LOWER_Y_RATIO,
-                x + width * displayConstants.FLAT_ROUND_INNER_CUBIC_UPPER_X_RATIO,
-                y + height * displayConstants.FLAT_ROUND_INNER_CUBIC_UPPER_Y_RATIO,
-                x, y + height * displayConstants.FLAT_ROUND_START_INNER_Y_RATIO);
+        border.lineTo(x, y + height * Dimens.FLAT_ROUND_END_INNER_Y_RATIO);
+        border.cubicTo(x + width * Dimens.FLAT_ROUND_INNER_CUBIC_LOWER_X_RATIO,
+                y + height * Dimens.FLAT_ROUND_INNER_CUBIC_LOWER_Y_RATIO,
+                x + width * Dimens.FLAT_ROUND_INNER_CUBIC_UPPER_X_RATIO,
+                y + height * Dimens.FLAT_ROUND_INNER_CUBIC_UPPER_Y_RATIO,
+                x, y + height * Dimens.FLAT_ROUND_START_INNER_Y_RATIO);
         border.close();
         canvas.drawPath(border, noteAccidentalPaint);
     }
@@ -375,16 +375,16 @@ public class NoteBoardView extends View {
     protected void drawOctaves(int octave, float noteX, float noteY, float radius, float textOffset, Paint paint, Canvas canvas){
         float y;
         if(octave < 0){
-            y = noteY + radius * displayConstants.OCTAVE_DISPLAY_RADIUS_RATIO;
+            y = noteY + radius * Dimens.OCTAVE_DISPLAY_RADIUS_RATIO;
         } else if(octave > 0){
-            y = noteY - radius * displayConstants.OCTAVE_DISPLAY_RADIUS_RATIO;
+            y = noteY - radius * Dimens.OCTAVE_DISPLAY_RADIUS_RATIO;
         } else {
             return;
         }
         octave = Math.abs(octave);
 
         //use the pythagorean theorem to calculate the distance from the y coordinate to the edge of the circle
-        float octaveChordDist = (float) (2f * (Math.sqrt(Math.pow(radius, 2) - Math.pow((radius * displayConstants.OCTAVE_DISPLAY_RADIUS_RATIO), 2))));
+        float octaveChordDist = (float) (2f * (Math.sqrt(Math.pow(radius, 2) - Math.pow((radius * Dimens.OCTAVE_DISPLAY_RADIUS_RATIO), 2))));
 
         //draw the octave dots along the chord
         for(float xPos = -octaveChordDist/2f + octaveChordDist/(octave + 1); xPos < octaveChordDist/2f; xPos += octaveChordDist/(octave + 1)){
@@ -396,13 +396,13 @@ public class NoteBoardView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         this.w = w;
         this.h = h;
-        this.stringThickness = w/displayConstants.STRING_THICKNESS_RATIO;
-        this.fretThickness = h/displayConstants.FRET_THICKNESS_RATIO;
-        this.verticalFretboardPadding = h/displayConstants.TOP_BOTTOM_PADDING_RATIO; // proportion of fretboard height
+        this.stringThickness = w/ Dimens.STRING_THICKNESS_RATIO;
+        this.fretThickness = h/ Dimens.FRET_THICKNESS_RATIO;
+        this.verticalFretboardPadding = h/ Dimens.TOP_BOTTOM_PADDING_RATIO; // proportion of fretboard height
         this.fretboardHeight = h - 2 * verticalFretboardPadding;
-        this.fretboardWidth = h/displayConstants.FRETBOARD_WIDTH_RATIO;
-        if(fretboardWidth * displayConstants.MAX_FRETBOARD_WIDTH_RATIO > w){
-            fretboardWidth = w/displayConstants.MAX_FRETBOARD_WIDTH_RATIO;
+        this.fretboardWidth = h/ Dimens.FRETBOARD_WIDTH_RATIO;
+        if(fretboardWidth * Dimens.MAX_FRETBOARD_WIDTH_RATIO > w){
+            fretboardWidth = w/ Dimens.MAX_FRETBOARD_WIDTH_RATIO;
         }
         this.horizontalFretboardPadding = (w - fretboardWidth)/2f;
         if(noteBoard.length-1 == 0){
@@ -410,8 +410,8 @@ public class NoteBoardView extends View {
         } else {
             this.stringBtwnDist = fretboardWidth / (noteBoard.length - 1);
         }
-        noteStringPaint.setStrokeWidth(stringThickness*displayConstants.STRING_BOLD_RATIO);
-        noteStringInnerPaint.setStrokeWidth(stringThickness*displayConstants.STRING_BOLD_RATIO - MIN_PADDING);
+        noteStringPaint.setStrokeWidth(stringThickness* Dimens.STRING_BOLD_RATIO);
+        noteStringInnerPaint.setStrokeWidth(stringThickness* Dimens.STRING_BOLD_RATIO - MIN_PADDING);
 
         // set the size of the notes to account for fret length and string distance
         if(fretRatios != null){
@@ -423,18 +423,18 @@ public class NoteBoardView extends View {
             }
             if(lastFretDistRatio != 0) {
                 float fretDistDependant = (float)(lastFretDistRatio / 2f * fretboardHeight - fretThickness/2f - MIN_PADDING);
-                float max = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)*displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO;
+                float max = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)* Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO;
                 float stringDistDependant = (stringBtwnDist - MIN_PADDING)/2f;
                 if(max >= fretDistDependant){
                     noteRadius = fretDistDependant;
-                    noteTextPaint.setTextSize(noteRadius/displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
+                    noteTextPaint.setTextSize(noteRadius/ Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
                 } else {
                     noteRadius = max;
                     noteTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.max_fret_font_size));
                 }
                 if(noteRadius > stringDistDependant){
                     noteRadius = stringDistDependant;
-                    noteTextPaint.setTextSize(noteRadius/displayConstants.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
+                    noteTextPaint.setTextSize(noteRadius/ Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
                 }
                 textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2f) - noteTextPaint.descent();
                 noteBorderInnerRadius = noteRadius - MIN_PADDING;

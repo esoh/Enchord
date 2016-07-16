@@ -1,6 +1,6 @@
 package sstudio.enchord.objects;
 
-import sstudio.enchord.constants.displayConstants;
+import sstudio.enchord.constants.Dimens;
 
 /**
  * Created by seanoh on 6/30/16.
@@ -32,7 +32,7 @@ public class Note {
                     octave--;
                     note = 'b';
                     accidental = 0;
-                    noteId = displayConstants.NUM_NOTES_OCTAVE - 1;
+                    noteId = Dimens.NUM_NOTES_OCTAVE - 1;
                 } else {
                     noteId = 0;
                 }
@@ -71,7 +71,7 @@ public class Note {
                     accidental = 0;
                     noteId = 0;
                 } else {
-                    noteId = displayConstants.NUM_NOTES_OCTAVE - 1;
+                    noteId = Dimens.NUM_NOTES_OCTAVE - 1;
                 }
                 break;
             default:
@@ -89,21 +89,21 @@ public class Note {
             default:
                 throw new IllegalArgumentException("Invalid accidental (-1, 0, or 1): " + accidental);
         }
-        if(octave < 0 || octave > displayConstants.NUM_OCTAVE - 1){
+        if(octave < 0 || octave > Dimens.NUM_OCTAVE - 1){
             throw new IllegalArgumentException("Octave must be between 0 and 10: " + octave);
         }
         this.note = note;
         this.accidental = accidental;
         this.octave = octave;
-        this.noteId += octave* displayConstants.NUM_NOTES_OCTAVE;
+        this.noteId += octave* Dimens.NUM_NOTES_OCTAVE;
     }
 
     public Note(int id, boolean sharps){
-        if(id < 0 || id > displayConstants.NUM_OCTAVE * displayConstants.NUM_NOTES_OCTAVE){
+        if(id < 0 || id > Dimens.NUM_OCTAVE * Dimens.NUM_NOTES_OCTAVE){
             throw new IllegalArgumentException("Id must be in [0, 132): " + id);
         }
-        octave = id/displayConstants.NUM_NOTES_OCTAVE;
-        int sNoteId = id%displayConstants.NUM_NOTES_OCTAVE;
+        octave = id/ Dimens.NUM_NOTES_OCTAVE;
+        int sNoteId = id% Dimens.NUM_NOTES_OCTAVE;
         switch (sNoteId){
             case 1:
             case 3:
