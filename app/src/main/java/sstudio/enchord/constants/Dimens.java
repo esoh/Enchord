@@ -9,9 +9,9 @@ public final class Dimens {
     //thickness of the string as a proportion of fretboard width
     public static final float STRING_THICKNESS_RATIO = 120;
     //thickness of the fret as a proportion of fretboard height
-    public static final float FRET_THICKNESS_RATIO = 250;
+    private static final float FRET_THICKNESS_RATIO = 250;
     //length of the padding to the fretboard (top and bottom) as a proportion of fretboard height
-    public static final float TOP_BOTTOM_PADDING_RATIO = 23.1f;
+    private static final float TOP_BOTTOM_PADDING_RATIO = 23.1f;
     //proportion of the note radius at which to display the octave information
     public static final float OCTAVE_DISPLAY_RADIUS_RATIO = .7f;
     public static final int NUM_NOTES_OCTAVE = 12; // number of notes in an octave
@@ -19,9 +19,9 @@ public final class Dimens {
     public static final double NEXT_FRET_CONST = 17.817; // fretboard constant to calculate fret position.
     public static final int MAX_FRET = 24; // maximum fret supported. Mostly due to guitar restraints.
     public static final float FONT_SIZE_TO_NOTE_RADIUS_RATIO = 5f/6; //ratio of font size to note radius.
-    public static final float FRETBOARD_WIDTH_RATIO = 5.2f; // ratio of fretboard width : height
+    private static final float FRETBOARD_WIDTH_RATIO = 5.2f; // ratio of fretboard width : height
     public static final float STRING_BOLD_RATIO = 1.5f;
-    public static final float MAX_FRETBOARD_WIDTH_RATIO = 1.45f; // max ratio of fretboard width to screen if current is too big
+    private static final float MAX_FRETBOARD_WIDTH_RATIO = 1.45f; // max ratio of fretboard width to screen if current is too big
 
     // drawing the accidental
     public static final float ACCIDENTAL_WIDTH_RATIO = .4f; // accidental's width in proportion to accidental height
@@ -50,4 +50,27 @@ public final class Dimens {
     public static final float FLAT_ROUND_INNER_CUBIC_UPPER_Y_RATIO = 0.3f;// flat's rounded line cubic upper coordinate's y ratio to height
     public static final float FLAT_ROUND_INNER_CUBIC_LOWER_X_RATIO = 1.2f;// flat's rounded line cubic lower coordinate's x ratio to width
     public static final float FLAT_ROUND_INNER_CUBIC_LOWER_Y_RATIO = 0.7f;// flat's rounded line cubic lower coordinate's y ratio to height
+
+    public static float calcFretThickness(float canvasLength){
+        return canvasLength/FRET_THICKNESS_RATIO;
+    }
+
+    public static float calcFretboardWidth(float canvasWidth, float canvasLength){
+        if(canvasLength/FRETBOARD_WIDTH_RATIO * MAX_FRETBOARD_WIDTH_RATIO > canvasWidth){
+            return canvasWidth/MAX_FRETBOARD_WIDTH_RATIO;
+        }
+        return canvasLength/FRETBOARD_WIDTH_RATIO;
+    }
+    
+    public static float calcFretboardLength(float canvasLength){
+        return canvasLength - 2 * canvasLength/TOP_BOTTOM_PADDING_RATIO;
+    }
+
+    public static float calcLongFretboardPadding(float canvasLength){
+        return canvasLength/TOP_BOTTOM_PADDING_RATIO;
+    }
+
+    public static float calcWideFretboardPadding(float canvasWidth, float canvasLength){
+        return (canvasWidth - calcFretboardWidth(canvasWidth, canvasLength))/2f;
+    }
 }

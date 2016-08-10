@@ -49,8 +49,8 @@ public class NoteBoardView extends View {
     protected float textOffset;
     protected int capoPos;
     protected float fretThickness, stringThickness;
-    protected float verticalFretboardPadding, horizontalFretboardPadding;
-    protected float fretboardWidth, fretboardHeight;
+    protected float longFretboardPadding, wideFretboardPadding;
+    protected float fretboardWidth, fretboardLength;
     protected float stringBtwnDist;
     protected Path border;
     protected boolean sharps;
@@ -137,7 +137,7 @@ public class NoteBoardView extends View {
     // description: handles the drawing of notes to display on the fretboard.
     @Override
     protected void onDraw(Canvas canvas) {
-        if(midFretRatios == null || noteBoard == null || openNotes == null || fretboardHeight == 0){
+        if(midFretRatios == null || noteBoard == null || openNotes == null || fretboardLength == 0){
             return;
         }
         for(int i = 0; i < noteBoard.length; i++){
@@ -149,8 +149,8 @@ public class NoteBoardView extends View {
             if(capoPos < startFret){
                 type = getType(notesToShowAll[openNotes[i] + capoPos]);
                 if (type != DRAW_INVALID) {
-                    float x = fretboardWidth + horizontalFretboardPadding - i * stringBtwnDist;
-                    float y = verticalFretboardPadding;
+                    float x = fretboardWidth + wideFretboardPadding - i * stringBtwnDist;
+                    float y = longFretboardPadding;
                     int note = openNotes[i] + capoPos;
                     drawNoteString(x, y, note, type, canvas);
                     drawNote(x, y, note, type, canvas);
@@ -159,8 +159,8 @@ public class NoteBoardView extends View {
             } else if(capoPos >= startFret){
                 type = getType(notesToShowAll[openNotes[i] + capoPos]);
                 if(type != DRAW_INVALID) {
-                    float x = fretboardWidth + horizontalFretboardPadding - i * stringBtwnDist;
-                    float y = (float) (midFretRatios[capoPos - startFret] * fretboardHeight + verticalFretboardPadding);
+                    float x = fretboardWidth + wideFretboardPadding - i * stringBtwnDist;
+                    float y = (float) (midFretRatios[capoPos - startFret] * fretboardLength + longFretboardPadding);
                     int note = openNotes[i] + capoPos;
                     drawNoteString(x, y, note, type, canvas);
                     drawNote(x, y, note, type, canvas);
@@ -172,8 +172,8 @@ public class NoteBoardView extends View {
                 if (j > capoPos - startFret){
                     type = getType((notesToShowAll[noteBoard[i][j]]));
                     if(type != DRAW_INVALID) {
-                        float x = fretboardWidth + horizontalFretboardPadding - i * stringBtwnDist;
-                        float y = (float) (midFretRatios[j] * fretboardHeight + verticalFretboardPadding);
+                        float x = fretboardWidth + wideFretboardPadding - i * stringBtwnDist;
+                        float y = (float) (midFretRatios[j] * fretboardLength + longFretboardPadding);
                         drawNote(x, y, noteBoard[i][j], type, canvas);
                     }
                 }
@@ -361,10 +361,10 @@ public class NoteBoardView extends View {
 
         int octaveType = getOctaveType(note);
         noteStringPaint.setColor(noteColors[octaveType][note % NUM_NOTES_OCTAVE]);
-        canvas.drawLine(x, y, x, h - verticalFretboardPadding + fretThickness/2f, noteStringPaint);
+        canvas.drawLine(x, y, x, h - longFretboardPadding + fretThickness/2f, noteStringPaint);
 
         if (type == DRAW_MATCH_OCTAVE) {
-            canvas.drawLine(x, y, x, h - verticalFretboardPadding, noteStringInnerPaint);
+            canvas.drawLine(x, y, x, h - longFretboardPadding, noteStringInnerPaint);
         }
     }
 
@@ -397,14 +397,11 @@ public class NoteBoardView extends View {
         this.w = w;
         this.h = h;
         this.stringThickness = w/ Dimens.STRING_THICKNESS_RATIO;
-        this.fretThickness = h/ Dimens.FRET_THICKNESS_RATIO;
-        this.verticalFretboardPadding = h/ Dimens.TOP_BOTTOM_PADDING_RATIO; // proportion of fretboard height
-        this.fretboardHeight = h - 2 * verticalFretboardPadding;
-        this.fretboardWidth = h/ Dimens.FRETBOARD_WIDTH_RATIO;
-        if(fretboardWidth * Dimens.MAX_FRETBOARD_WIDTH_RATIO > w){
-            fretboardWidth = w/ Dimens.MAX_FRETBOARD_WIDTH_RATIO;
-        }
-        this.horizontalFretboardPadding = (w - fretboardWidth)/2f;
+        this.fretThickness = Dimens.calcFretThickness(h);
+        this.longFretboardPadding = Dimens.calcLongFretboardPadding(h); // proportion of fretboard height
+        this.fretboardLength = h - 2 * longFretboardPadding;
+        this.fretboardWidth = Dimens.calcFretboardWidth(w, h);
+        this.wideFretboardPadding = Dimens.calcWideFretboardPadding(w, h);
         if(noteBoard.length-1 == 0){
             this.stringBtwnDist = -1;
         } else {
@@ -422,7 +419,7 @@ public class NoteBoardView extends View {
                 lastFretDistRatio = fretRatios[0];
             }
             if(lastFretDistRatio != 0) {
-                float fretDistDependant = (float)(lastFretDistRatio / 2f * fretboardHeight - fretThickness/2f - MIN_PADDING);
+                float fretDistDependant = (float)(lastFretDistRatio / 2f * fretboardLength - fretThickness/2f - MIN_PADDING);
                 float max = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)* Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO;
                 float stringDistDependant = (stringBtwnDist - MIN_PADDING)/2f;
                 if(max >= fretDistDependant){
