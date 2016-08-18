@@ -25,13 +25,19 @@
             android:id="@+id/show_all_notes_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show all notes" />
+            android:text="all notes" />
 
         <Switch
             android:id="@+id/show_octaves_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show octaves" />
+            android:text="octaves" />
+
+        <Switch
+            android:id="@+id/show_sharps_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sharps" />
     </LinearLayout>
 
 </LinearLayout>
