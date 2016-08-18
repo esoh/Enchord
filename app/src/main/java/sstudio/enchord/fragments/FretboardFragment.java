@@ -2,6 +2,7 @@ package sstudio.enchord.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -198,8 +199,13 @@ public class FretboardFragment extends Fragment{
         }
     }
 
-    public void clearNotes(){
+    public void clearNotes() throws Exception{
+        if(mNoteBoard == null){
+            throw new Exception("Noteboard doesn't exist!");
+        }
         mNoteBoard.clearNotes();
+        notesToShow = new boolean[NUM_NOTES_ALL];
+        Log.d("AYYY", "CLEARED.");
     }
 
     public void setFretRange(int startFret, int endFret) throws Exception {
