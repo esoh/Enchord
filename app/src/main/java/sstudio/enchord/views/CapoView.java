@@ -108,5 +108,6 @@ public class CapoView extends View implements View.OnTouchListener{
 
     public void setStartFret(int startFret) {
         this.startFret = startFret;
+        invalidate();
     }
 }

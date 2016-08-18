@@ -27,24 +27,37 @@ public class MainActivity extends AppCompatActivity {
         switchOctaves = (Switch) findViewById(R.id.show_octaves_switch);
         fretboard = (FretboardFragment) getFragmentManager().findFragmentById(R.id.fretboard_fragment);
 
-        switchAllNotes.setChecked(showAllNotes);
-        fretboard.setShowAllNotes(showAllNotes);
-        switchOctaves.setChecked(showOctaves);
-        fretboard.setShowOctaves(showOctaves);
+        try {
 
-        switchAllNotes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                fretboard.setShowAllNotes(isChecked);
-            }
-        });
+            switchAllNotes.setChecked(showAllNotes);
+            fretboard.setShowAllNotes(showAllNotes);
+            switchOctaves.setChecked(showOctaves);
+            fretboard.setShowOctaves(showOctaves);
 
-        switchOctaves.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                fretboard.setShowOctaves(isChecked);
-            }
-        });
+            switchAllNotes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    try {
+                        fretboard.setShowAllNotes(isChecked);
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            switchOctaves.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    try {
+                        fretboard.setShowOctaves(isChecked);
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 }

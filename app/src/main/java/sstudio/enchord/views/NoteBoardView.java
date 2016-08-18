@@ -491,6 +491,139 @@ public class NoteBoardView extends View {
         invalidate();
     }
 
+    public void showNote(int noteId){
+        // when showing a note, we need to update the octave parameter if the same note in multiple octaves are toShow
+
+        notesToShowAll[noteId] = 0;
+        for(int note = noteId%NUM_NOTES_OCTAVE; note < NUM_NOTES_OCTAVE*NUM_OCTAVE; note+=NUM_NOTES_OCTAVE) {
+            // if toShow note is spotted, we want to traverse each octave and reset its display.
+            if(notesToShowAll[note] == 0 && note >= NUM_NOTES_OCTAVE){
+                // we start from the note and traverse downwards until we reach the end or another toShow note.
+                for(int octaveNote = note - NUM_NOTES_OCTAVE; octaveNote >= 0; octaveNote -= NUM_NOTES_OCTAVE){
+                    // if we run into another toShow note, we stop.
+                    if(notesToShowAll[octaveNote] == 0){
+                        break;
+                    }
+                    notesToShowAll[octaveNote] = (octaveNote - note)/NUM_NOTES_OCTAVE;
+                }
+                // then we start from the note and traverse upwards, setting all of their displays.
+                for(int octaveNote = note + NUM_NOTES_OCTAVE; octaveNote < NUM_NOTES_OCTAVE*NUM_OCTAVE; octaveNote += NUM_NOTES_OCTAVE){
+                    if(notesToShowAll[octaveNote] != 0){
+                        notesToShowAll[octaveNote] = (octaveNote - note) / NUM_NOTES_OCTAVE;
+                    }
+                }
+            }
+            // then we find the next toShow note, and repeat
+        }
+        invalidate();
+    }
+
+    public void hideNote(int noteId){
+        boolean reset = false; // determine if we need to reset the octaves the hard way
+        for(int note = noteId%NUM_NOTES_OCTAVE; note < NUM_NOTES_OCTAVE*NUM_OCTAVE; note+=NUM_NOTES_OCTAVE) {
+            // if there exists the same note of a different octave, we must reset the octaves' display the hard way.
+            if(notesToShowAll[note] == 0 && note != noteId){
+                reset = true;
+                break;
+            }
+        }
+        notesToShowAll[noteId] = UNSET;
+        // resetting the octaves' display parameters to match up with the updated octaves
+        if(reset){
+            for(int note = noteId%NUM_NOTES_OCTAVE; note < NUM_NOTES_OCTAVE*NUM_OCTAVE; note+=NUM_NOTES_OCTAVE) {
+                // if toShow note is spotted, we want to traverse each octave and reset its display.
+                if(notesToShowAll[note] == 0 && note >= NUM_NOTES_OCTAVE){
+                    // we start from the note and traverse downwards until we reach the end or another toShow note.
+                    for(int octaveNote = note - NUM_NOTES_OCTAVE; octaveNote >= 0; octaveNote -= NUM_NOTES_OCTAVE){
+                        // if we run into another toShow note, we stop.
+                        if(notesToShowAll[octaveNote] == 0){
+                            break;
+                        }
+                        notesToShowAll[octaveNote] = (octaveNote - note)/NUM_NOTES_OCTAVE;
+                    }
+                    // then we start from the note and traverse upwards, setting all of their displays.
+                    for(int octaveNote = note + NUM_NOTES_OCTAVE; octaveNote < NUM_NOTES_OCTAVE*NUM_OCTAVE; octaveNote += NUM_NOTES_OCTAVE){
+                        notesToShowAll[octaveNote] = (octaveNote - note)/NUM_NOTES_OCTAVE;
+                    }
+                }
+                // then we find the next toShow note, and repeat
+            }
+        // if there are not repeating notes in different octaves, we can unset the note in every octave.
+        } else {
+            for(int note = noteId%NUM_NOTES_OCTAVE; note < NUM_NOTES_OCTAVE*NUM_OCTAVE; note+=NUM_NOTES_OCTAVE) {
+                notesToShowAll[note] = UNSET;
+            }
+        }
+        invalidate();
+    }
+
+    public void moveNote(int oldNoteId, int newNoteId){
+        //hid the new note
+        boolean reset = false;
+        for(int note = oldNoteId%NUM_NOTES_OCTAVE; note < NUM_NOTES_OCTAVE*NUM_OCTAVE; note+=NUM_NOTES_OCTAVE) {
+            // if there exists the same note of a different octave, we must reset the octaves' display.
+            if(notesToShowAll[note] == 0 && note != oldNoteId){
+                reset = true;
+                break;
+            }
+        }
+        notesToShowAll[oldNoteId] = UNSET;
+        if(reset){
+            for(int note = oldNoteId%NUM_NOTES_OCTAVE; note < NUM_NOTES_OCTAVE*NUM_OCTAVE; note+=NUM_NOTES_OCTAVE) {
+                // if toShow note is spotted, we want to traverse each octave and reset its display.
+                if(notesToShowAll[note] == 0 && note >= NUM_NOTES_OCTAVE){
+                    // we start from the note and traverse downwards until we reach the end or another toShow note.
+                    for(int octaveNote = note - NUM_NOTES_OCTAVE; octaveNote >= 0; octaveNote -= NUM_NOTES_OCTAVE){
+                        // if we run into another toShow note, we stop.
+                        if(notesToShowAll[octaveNote] == 0){
+                            break;
+                        }
+                        notesToShowAll[octaveNote] = (octaveNote - note)/NUM_NOTES_OCTAVE;
+                    }
+                    // then we start from the note and traverse upwards, setting all of their displays.
+                    for(int octaveNote = note + NUM_NOTES_OCTAVE; octaveNote < NUM_NOTES_OCTAVE*NUM_OCTAVE; octaveNote += NUM_NOTES_OCTAVE){
+                        if(notesToShowAll[octaveNote] != 0) {
+                            notesToShowAll[octaveNote] = (octaveNote - note) / NUM_NOTES_OCTAVE;
+                        }
+                    }
+                }
+                // then we find the next toShow note, and repeat
+            }
+            // if there are not repeating notes in different octaves, we can unset the note in every octave.
+        } else {
+            for(int note = oldNoteId%NUM_NOTES_OCTAVE; note < NUM_NOTES_OCTAVE*NUM_OCTAVE; note+=NUM_NOTES_OCTAVE) {
+                notesToShowAll[note] = UNSET;
+            }
+        }
+
+        // show the new note.
+        notesToShowAll[newNoteId] = 0;
+        for(int note = newNoteId%NUM_NOTES_OCTAVE; note < NUM_NOTES_OCTAVE*NUM_OCTAVE; note+=NUM_NOTES_OCTAVE) {
+            // if toShow note is spotted, we want to traverse each octave and reset its display.
+            if(notesToShowAll[note] == 0 && note >= NUM_NOTES_OCTAVE){
+                // we start from the note and traverse downwards until we reach the end or another toShow note.
+                for(int octaveNote = note - NUM_NOTES_OCTAVE; octaveNote >= 0; octaveNote -= NUM_NOTES_OCTAVE){
+                    // if we run into another toShow note, we stop.
+                    if(notesToShowAll[octaveNote] == 0){
+                        break;
+                    }
+                    notesToShowAll[octaveNote] = (octaveNote - note)/NUM_NOTES_OCTAVE;
+                }
+                // then we start from the note and traverse upwards, setting all of their displays.
+                for(int octaveNote = note + NUM_NOTES_OCTAVE; octaveNote < NUM_NOTES_OCTAVE*NUM_OCTAVE; octaveNote += NUM_NOTES_OCTAVE){
+                    notesToShowAll[octaveNote] = (octaveNote - note)/NUM_NOTES_OCTAVE;
+                }
+            }
+            // then we find the next toShow note, and repeat
+        }
+        invalidate();
+    }
+
+    public void clearNotes(){
+        Arrays.fill(notesToShowAll, UNSET);
+        invalidate();
+    }
+
     public void setShowOctaves(boolean showOctaves) {
         this.showOctaves = showOctaves;
         invalidate();

@@ -115,6 +115,7 @@ public class FretboardView extends View {
     public void setFretRange(int startFret, int endFret) {
         this.startFret = startFret;
         this.endFret = endFret;
+        invalidate();
     }
 
     public void setNumStrings(int numStrings){

@@ -25,6 +25,8 @@ public class FretboardFragment extends Fragment{
     private boolean[] notesToShow;
     private boolean showOctaves, showAll, sharps;
     private NoteBoardView mNoteBoard;
+    private FretboardView mFretboard;
+    private CapoView mCapo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class FretboardFragment extends Fragment{
         notesToShow[Note.noteToID('c', 0, 5)] = true;
         notesToShow[Note.noteToID('e', 0, 5)] = true;
         notesToShow[Note.noteToID('g', 0, 5)] = true;
+
         //showOctaves = true;
         //showAll = true;
         sharps = true;
@@ -75,14 +78,14 @@ public class FretboardFragment extends Fragment{
             e.printStackTrace();
         }
 
-        FretboardView mFretboard = (FretboardView) rootView.findViewById(R.id.fretboard);
+        mFretboard =  (FretboardView) rootView.findViewById(R.id.fretboard);
         if(mFretboard != null) {
             mFretboard.setFretRange(startFret, endFret);
             mFretboard.setFretRatios(fretRatios, midFretRatios);
             mFretboard.setNumStrings(numStrings);
         }
 
-        CapoView mCapo = (CapoView) rootView.findViewById(R.id.capo);
+        mCapo = (CapoView) rootView.findViewById(R.id.capo);
         if(mCapo != null){
             mCapo.setFretRatios(fretRatios, midFretRatios);
             mCapo.setStartFret(startFret);
@@ -100,16 +103,127 @@ public class FretboardFragment extends Fragment{
             mNoteBoard.setShowAll(showAll);
             mNoteBoard.setSharps(sharps);
         }
-
         return rootView;
     }
 
-    public void setShowAllNotes(boolean show){
-        mNoteBoard.setShowAll(show);
+    public void setShowAllNotes(boolean show) throws Exception{
+        if(mNoteBoard != null) {
+            mNoteBoard.setShowAll(show);
+            this.showAll = show;
+        } else {
+            throw new Exception("Noteboard doesn't exist!");
+        }
     }
 
-    public void setShowOctaves(boolean show){
-        mNoteBoard.setShowOctaves(show);
+    public void setShowOctaves(boolean show) throws Exception{
+        if(mNoteBoard != null) {
+            mNoteBoard.setShowOctaves(show);
+            this.showOctaves = show;
+        } else {
+            throw new Exception("Noteboard doesn't exist!");
+        }
+    }
+
+    public void setSharps(boolean sharps) throws Exception{
+        if(mNoteBoard != null) {
+            mNoteBoard.setSharps(sharps);
+            this.sharps = sharps;
+        } else {
+            throw new Exception("Noteboard doesn't exist!");
+        }
+    }
+
+    public void setTuning(int[] openNotes) throws Exception{
+        if(mNoteBoard != null){
+            this.openNotes = openNotes;
+            mNoteBoard.setNoteBoard(openNotes, startFret, endFret);
+        } else {
+            throw new Exception("Noteboard doesn't exist!");
+        }
+    }
+
+    public void setCapo(int capo) throws Exception{
+        if(mCapo != null && mNoteBoard != null){
+            this.capo = capo;
+            mCapo.setCapo(capo);
+            mNoteBoard.setCapo(capo);
+        }
+    }
+
+    public void setNotesToShow(boolean[] notesToShow) throws Exception {
+        if(mNoteBoard == null) {
+            throw new Exception("Noteboard doesn't exist!");
+        } else if(notesToShow.length != NUM_NOTES_ALL) {
+            throw new Exception("Wrong size of notes to show");
+        } else {
+            mNoteBoard.showNotes(notesToShow);
+            this.notesToShow = notesToShow;
+        }
+    }
+
+    public void hideNote(int noteId) throws IndexOutOfBoundsException{
+        try{
+            if(!notesToShow[noteId]){
+                return;
+            }
+            notesToShow[noteId] = false;
+            mNoteBoard.hideNote(noteId);
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showNote(int noteId) throws IndexOutOfBoundsException{
+        try{
+            if(notesToShow[noteId]){
+                return;
+            }
+            notesToShow[noteId] = true;
+            mNoteBoard.showNote(noteId);
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void moveNote(int oldNoteId, int newNoteId) throws IndexOutOfBoundsException{
+        try{
+            if(!notesToShow[oldNoteId] && notesToShow[newNoteId]){
+                return;
+            }
+            notesToShow[oldNoteId] = false;
+            notesToShow[newNoteId] = true;
+            mNoteBoard.moveNote(oldNoteId, newNoteId);
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearNotes(){
+        mNoteBoard.clearNotes();
+    }
+
+    public void setFretRange(int startFret, int endFret) throws Exception {
+        // calculate fret ratios
+        try {
+            fretRatios = getFretRatios(endFret - startFret);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        if(mFretboard != null && mCapo != null && mNoteBoard != null){
+            if(this.endFret - this.startFret != endFret - startFret){
+                mFretboard.setFretRatios(fretRatios, midFretRatios);
+                mCapo.setFretRatios(fretRatios, midFretRatios);
+                mNoteBoard.setFretRatios(fretRatios, midFretRatios);
+            }
+            this.startFret = startFret;
+            this.endFret = endFret;
+            mFretboard.setFretRange(startFret, endFret);
+            mCapo.setStartFret(startFret);
+            mNoteBoard.setNoteBoard(openNotes, startFret, endFret);
+        } else {
+            throw new Exception("Fretboard or its parts don't exist!");
+        }
     }
 
     /* calculates the ratios at which the frets are drawn
