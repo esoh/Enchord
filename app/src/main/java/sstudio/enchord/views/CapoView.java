@@ -20,7 +20,7 @@ import sstudio.enchord.constants.Dimens;
  * call invalidate() when snaps to new position
  */
 public class CapoView extends View implements View.OnTouchListener{
-    protected int w, h;
+    protected int canvasWidth, canvasLength;
     protected float capoWidth, capoHeight;
     protected double[] fretRatios, midFretRatios;
     protected final int MIN_PADDING = getResources().getDimensionPixelSize(R.dimen.one_sp);
@@ -48,8 +48,8 @@ public class CapoView extends View implements View.OnTouchListener{
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        this.w = w;
-        this.h = h;
+        this.canvasWidth = w;
+        this.canvasLength = h;
         longFretboardPadding = Dimens.calcLongFretboardPadding(h);
         wideFretboardPadding = Dimens.calcWideFretboardPadding(w, h);
         fretboardLength = Dimens.calcFretboardLength(h);
@@ -63,12 +63,17 @@ public class CapoView extends View implements View.OnTouchListener{
         this.midFretRatios = midFretRatios;
         if (fretRatios.length >= 2) {
             double lastFretRatio = fretRatios[fretRatios.length - 1] - fretRatios[fretRatios.length - 2];
-            capoHeight = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)* Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO * 2 * 1.2f;
-            if(h != 0 && capoHeight > lastFretRatio * h - MIN_PADDING - Dimens.calcFretThickness(h)){
-                capoHeight = (float) (lastFretRatio* h - MIN_PADDING - Dimens.calcFretThickness(h));
-            }
+            capoHeight = calcCapoHeight(canvasLength, lastFretRatio);
         }
-        capoWidth = Dimens.calcFretboardWidth(w, h);
+        capoWidth = Dimens.calcFretboardWidth(canvasWidth, canvasLength);
+    }
+
+    protected float calcCapoHeight(int canvasLength, double lastFretRatio){
+        float capoHeight = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)* Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO * 2 * 1.2f;
+        if(canvasLength != 0 && capoHeight > lastFretRatio * canvasLength - MIN_PADDING - Dimens.calcFretThickness(canvasLength)){
+            capoHeight = (float) (lastFretRatio * canvasLength - MIN_PADDING - Dimens.calcFretThickness(canvasLength));
+        }
+        return capoHeight;
     }
 
     public void setCapo(int capo){
