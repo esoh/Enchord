@@ -226,6 +226,7 @@ public class FretboardFragment extends Fragment{
             this.endFret = endFret;
             mFretboard.setFretRange(startFret, endFret);
             mCapo.setStartFret(startFret);
+            mCapo.setCapo(capo);
             mNoteBoard.setNoteBoard(openNotes, startFret, endFret);
         } else {
             throw new Exception("Fretboard or its parts don't exist!");

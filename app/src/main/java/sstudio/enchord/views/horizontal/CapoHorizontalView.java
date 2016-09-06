@@ -50,11 +50,14 @@ public class CapoHorizontalView extends CapoView{
                 midYPos = longFretboardPadding;
             } else {
                 // draw the capo at the midfret of midfret[startFret - capo]
-                midYPos = longFretboardPadding + (float)(fretboardLength * midFretRatios[capo - startFret]);
+                if(midFretRatios.length == 1){
+                    midYPos = longFretboardPadding + fretboardLength * 0.5f;
+                } else {
+                    midYPos = longFretboardPadding + (float) (fretboardLength * midFretRatios[capo - startFret]);
+                }
             }
-            float noteRadius = getResources().getDimensionPixelSize(R.dimen.note_radius);
-            capoShape = new RectF(midYPos - capoHeight/2f, wideFretboardPadding - noteRadius/2f,
-                    midYPos + capoHeight/2f, wideFretboardPadding + fretboardWidth + noteRadius/2f);
+            capoShape = new RectF(midYPos - capoHeight/2f, wideFretboardPadding - NOTE_RADIUS/2f,
+                    midYPos + capoHeight/2f, wideFretboardPadding + fretboardWidth + NOTE_RADIUS/2f);
         }
         invalidate();
     }

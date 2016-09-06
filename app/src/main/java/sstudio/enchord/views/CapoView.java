@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -24,6 +25,7 @@ public class CapoView extends View implements View.OnTouchListener{
     protected float capoWidth, capoHeight;
     protected double[] fretRatios, midFretRatios;
     protected final int MIN_PADDING = getResources().getDimensionPixelSize(R.dimen.one_sp);
+    protected final int NOTE_RADIUS = getResources().getDimensionPixelSize(R.dimen.note_radius);
     protected boolean isHidden;
     protected Paint capoPaint;
     protected int startFret;
@@ -66,6 +68,7 @@ public class CapoView extends View implements View.OnTouchListener{
             capoHeight = calcCapoHeight(canvasLength, lastFretRatio);
         }
         capoWidth = Dimens.calcFretboardWidth(canvasWidth, canvasLength);
+        invalidate();
     }
 
     protected float calcCapoHeight(int canvasLength, double lastFretRatio){
@@ -87,11 +90,14 @@ public class CapoView extends View implements View.OnTouchListener{
                 midYPos = longFretboardPadding;
             } else {
                 // draw the capo at the midfret of midfret[startFret - capo]
-                midYPos = longFretboardPadding + (float)(fretboardLength * midFretRatios[capo - startFret]);
+                if(midFretRatios.length == 1){
+                    midYPos = longFretboardPadding + fretboardLength * 0.5f;
+                } else {
+                    midYPos = longFretboardPadding + (float) (fretboardLength * midFretRatios[capo - startFret]);
+                }
             }
-            float noteRadius = getResources().getDimensionPixelSize(R.dimen.note_radius);
-            capoShape = new RectF(wideFretboardPadding - noteRadius/2f, midYPos - capoHeight/2f,
-                    wideFretboardPadding + fretboardWidth + noteRadius/2f, midYPos + capoHeight/2f);
+            capoShape = new RectF(wideFretboardPadding - NOTE_RADIUS/2f, midYPos - capoHeight/2f,
+                    wideFretboardPadding + fretboardWidth + NOTE_RADIUS/2f, midYPos + capoHeight/2f);
         }
 
         invalidate();

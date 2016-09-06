@@ -43,7 +43,7 @@ public class FretboardHorizontalView extends FretboardView {
 
         //draw the frets
         fretboardPaint.setStrokeWidth(fretThickness);
-        for(int i = 0; i < fretRatios.length; i++){
+        for(int i = 0; i < midFretRatios.length; i++){
             float noteRadius = getResources().getDimensionPixelSize(R.dimen.note_radius);
             canvas.drawText((i+startFret)+"", (float)(midFretRatios[i] * fretboardLength + longFretboardPadding),
                             fretboardWidth + wideFretboardPadding + noteRadius*2 + textOffset, fretNumberPaint);

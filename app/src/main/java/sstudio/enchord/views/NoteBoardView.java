@@ -161,7 +161,12 @@ public class NoteBoardView extends View {
                 type = getType(notesToShowAll[openNotes[i] + capoPos]);
                 if(type != DRAW_INVALID) {
                     float x = fretboardWidth + wideFretboardPadding - i * stringBtwnDist;
-                    float y = (float) (midFretRatios[capoPos - startFret] * fretboardLength + longFretboardPadding);
+                    float y;
+                    if(midFretRatios.length == 1){
+                        y = 0.5f * fretboardLength + longFretboardPadding;
+                    } else {
+                        y = (float) (midFretRatios[capoPos - startFret] * fretboardLength + longFretboardPadding);
+                    }
                     int note = openNotes[i] + capoPos;
                     drawNoteString(x, y, note, type, canvas);
                     drawNote(x, y, note, type, canvas);

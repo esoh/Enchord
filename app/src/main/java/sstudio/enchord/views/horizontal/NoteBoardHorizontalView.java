@@ -36,7 +36,12 @@ public class NoteBoardHorizontalView extends NoteBoardView {
             } else if (capoPos >= startFret) {
                 type = getType(notesToShowAll[openNotes[i] + capoPos]);
                 if (type != DRAW_INVALID) {
-                    float x = (float) (midFretRatios[capoPos - startFret] * fretboardLength + longFretboardPadding);
+                    float x;
+                    if(midFretRatios.length == 1){
+                        x = 0.5f * fretboardLength + longFretboardPadding;
+                    } else {
+                        x = (float) (midFretRatios[capoPos - startFret] * fretboardLength + longFretboardPadding);
+                    }
                     float y = wideFretboardPadding + i * stringBtwnDist;
                     int note = openNotes[i] + capoPos;
                     drawNoteString(x, y, note, type, canvas);

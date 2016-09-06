@@ -44,6 +44,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="clear notes"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <NumberPicker
+                android:id="@+id/start_fret_number_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="start fret"
+                />
+            <NumberPicker
+                android:id="@+id/end_fret_number_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="end fret"
+                />
+        </LinearLayout>
+
+
     </LinearLayout>
 
 </LinearLayout>

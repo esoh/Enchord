@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.NumberPicker;
 import android.widget.Switch;
 
 import sstudio.enchord.fragments.FretboardFragment;
@@ -14,10 +15,13 @@ import sstudio.enchord.objects.Note;
  * Created by seanoh on 6/30/16.
  */
 public class MainActivity extends AppCompatActivity {
+    private final int MAX_FRET_VAL = 24;
     private Switch switchAllNotes, switchOctaves, switchSharps;
     private Button buttonClearNotes;
     private FretboardFragment fretboard;
     private boolean showOctaves, showAllNotes, showSharps;
+    private NumberPicker startFretPicker, endFretPicker;
+    private int startFret, endFret;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +31,15 @@ public class MainActivity extends AppCompatActivity {
         showOctaves = true;
         showAllNotes = false;
         showSharps = true;
+        startFret = 1;
+        endFret = 15;
 
         switchAllNotes = (Switch) findViewById(R.id.show_all_notes_switch);
         switchOctaves = (Switch) findViewById(R.id.show_octaves_switch);
         switchSharps = (Switch) findViewById(R.id.show_sharps_switch);
         buttonClearNotes = (Button) findViewById(R.id.clear_notes_button);
+        startFretPicker = (NumberPicker) findViewById(R.id.start_fret_number_picker);
+        endFretPicker = (NumberPicker) findViewById(R.id.end_fret_number_picker);
 
         fretboard = (FretboardFragment) getFragmentManager().findFragmentById(R.id.fretboard_fragment);
         //TODO: save showNotes && capo through bundle
@@ -49,6 +57,19 @@ public class MainActivity extends AppCompatActivity {
 
             switchSharps.setChecked(showSharps);
             fretboard.setSharps(showSharps);
+
+            startFretPicker.setMaxValue(MAX_FRET_VAL-1);
+            endFretPicker.setMaxValue(MAX_FRET_VAL-1);
+
+            startFretPicker.setMinValue(1);
+            endFretPicker.setMinValue(1);
+
+            startFretPicker.setValue(startFret);
+            endFretPicker.setValue(endFret);
+            fretboard.setFretRange(startFret, endFret + 1);
+
+            startFretPicker.setWrapSelectorWheel(false);
+            endFretPicker.setWrapSelectorWheel(false);
 
             switchAllNotes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -93,6 +114,35 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            startFretPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    if(endFretPicker.getValue() < newVal){
+                        endFretPicker.setValue(newVal);
+                    }
+                    try {
+                        fretboard.setFretRange(newVal, endFretPicker.getValue() + 1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            endFretPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    if(startFretPicker.getValue() > newVal){
+                        startFretPicker.setValue(newVal);
+                    }
+                    try {
+                        fretboard.setFretRange(startFretPicker.getValue(), newVal + 1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
         } catch (Exception e){
             e.printStackTrace();
         }
