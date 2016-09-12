@@ -474,6 +474,35 @@ public class NoteBoardView extends View {
         this.midFretRatios = midFretRatios;
         this.noteRadius = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)*5/6;
         this.noteBorderInnerRadius = noteRadius - MIN_PADDING;
+
+        // set the size of the notes to account for fret length and string distance
+        if(fretRatios != null){
+            double lastFretDistRatio = 0;
+            if(fretRatios.length > 1){
+                lastFretDistRatio = (fretRatios[fretRatios.length - 1] - fretRatios[fretRatios.length - 2]);
+            } else if(fretRatios.length == 1){
+                lastFretDistRatio = fretRatios[0];
+            }
+            if(lastFretDistRatio != 0) {
+                float fretDistDependant = (float)(lastFretDistRatio / 2f * fretboardLength);
+                float max = getResources().getDimensionPixelSize(R.dimen.max_fret_font_size)* Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO;
+                float stringDistDependant = (stringBtwnDist - MIN_PADDING)/2f;
+                if(max >= fretDistDependant){
+                    noteRadius = fretDistDependant;
+                    noteTextPaint.setTextSize(noteRadius/ Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
+                } else {
+                    noteRadius = max;
+                    noteTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.max_fret_font_size));
+                }
+                if(noteRadius > stringDistDependant){
+                    noteRadius = stringDistDependant;
+                    noteTextPaint.setTextSize(noteRadius/ Dimens.FONT_SIZE_TO_NOTE_RADIUS_RATIO);
+                }
+                textOffset = ((noteTextPaint.descent() - noteTextPaint.ascent()) / 2f) - noteTextPaint.descent();
+                noteBorderInnerRadius = noteRadius - MIN_PADDING;
+            }
+        }
+        invalidate();
     }
 
     public void setCapo(int capoPos){
