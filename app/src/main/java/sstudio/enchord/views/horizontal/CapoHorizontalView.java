@@ -61,4 +61,15 @@ public class CapoHorizontalView extends CapoView{
         }
         invalidate();
     }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if(midYPos != 0 && !isHidden){
+            float noteRadius = getResources().getDimensionPixelSize(R.dimen.note_radius);
+
+            canvas.drawRoundRect(capoShape, noteRadius/8f, noteRadius/8f, capoPaint);
+
+            canvas.drawText(capo + "", capoShape.centerX(), fretboardWidth + wideFretboardPadding + noteRadius*2 + textOffset, fretNumberPaint);
+        }
+    }
 }

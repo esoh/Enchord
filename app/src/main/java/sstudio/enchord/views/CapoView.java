@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -28,11 +30,13 @@ public class CapoView extends View implements View.OnTouchListener{
     protected final int NOTE_RADIUS = getResources().getDimensionPixelSize(R.dimen.note_radius);
     protected boolean isHidden;
     protected Paint capoPaint;
+    protected TextPaint fretNumberPaint;
     protected int startFret;
     protected float midYPos;
     protected float longFretboardPadding, wideFretboardPadding, fretboardLength, fretboardWidth;
     protected int capo;
     protected RectF capoShape;
+    protected float textOffset;
 
 
     public CapoView(Context context, AttributeSet attrs) {
@@ -40,6 +44,15 @@ public class CapoView extends View implements View.OnTouchListener{
         isHidden = true;
         capoPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         capoPaint.setColor(ContextCompat.getColor(context, R.color.colorCapo));
+
+
+        fretNumberPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        fretNumberPaint.setColor(ContextCompat.getColor(context, R.color.colorCapo));
+
+        fretNumberPaint.setTextAlign(Paint.Align.CENTER);
+        fretNumberPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.max_fret_font_size));
+        fretNumberPaint.setTypeface(Typeface.DEFAULT_BOLD);
+        textOffset = ((fretNumberPaint.descent() - fretNumberPaint.ascent()) / 2f) - fretNumberPaint.descent();
     }
 
     @Override
@@ -109,6 +122,9 @@ public class CapoView extends View implements View.OnTouchListener{
             float noteRadius = getResources().getDimensionPixelSize(R.dimen.note_radius);
 
             canvas.drawRoundRect(capoShape, noteRadius/8f, noteRadius/8f, capoPaint);
+
+            canvas.drawText(capo + "", wideFretboardPadding - noteRadius*2,
+                            capoShape.centerY() + textOffset, fretNumberPaint);
         }
     }
 
