@@ -8,7 +8,7 @@ It can be used to memorize note positions or choose appropriate tunings, capo po
 - Minimalist guitar fretboard with 19 frets
 - Screen rotation for simplified viewing
 
-<h3>Future Features</h3>
+<h3>Planned Features</h3>
 - Choose a note to show note positions on the fretboard
 - Change the tuning of the guitar
 - Draggable capo
