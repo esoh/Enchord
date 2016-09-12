@@ -61,7 +61,7 @@ public class FretboardFragment extends Fragment{
             default:
         }
         //capo off = 0. if capo == 1, that means it's on the 1st fret.
-        capo = 2;
+        capo = 0;
 
         notesToShow = new boolean[NUM_NOTES_ALL];
         notesToShow[Note.noteToID('c', 0, 5)] = true;

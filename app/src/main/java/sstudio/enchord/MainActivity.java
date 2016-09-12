@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean showOctaves, showAllNotes, showSharps;
     private NumberPicker startFretPicker, endFretPicker;
     private int startFret, endFret;
+    private int capo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         showSharps = true;
         startFret = 1;
         endFret = 15;
+        capo = 2;
 
         switchAllNotes = (Switch) findViewById(R.id.show_all_notes_switch);
         switchOctaves = (Switch) findViewById(R.id.show_octaves_switch);
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         fretboard.showNote(Note.noteToID('e', 0, 5));
         fretboard.showNote(Note.noteToID('g', 0, 5));
         try {
+            fretboard.setCapo(capo);
 
             switchAllNotes.setChecked(showAllNotes);
             fretboard.setShowAllNotes(showAllNotes);
@@ -62,7 +65,11 @@ public class MainActivity extends AppCompatActivity {
             endFretPicker.setMaxValue(MAX_FRET_VAL-1);
 
             startFretPicker.setMinValue(1);
-            endFretPicker.setMinValue(1);
+            if(capo > 0){
+                endFretPicker.setMinValue(capo);
+            } else {
+                endFretPicker.setMinValue(1);
+            }
 
             startFretPicker.setValue(startFret);
             endFretPicker.setValue(endFret);
