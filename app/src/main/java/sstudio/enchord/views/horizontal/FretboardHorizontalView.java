@@ -2,14 +2,10 @@ package sstudio.enchord.views.horizontal;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 
 import sstudio.enchord.R;
-import sstudio.enchord.constants.displayConstants;
+import sstudio.enchord.constants.Dimens;
 import sstudio.enchord.views.FretboardView;
 
 /**
@@ -31,8 +27,8 @@ public class FretboardHorizontalView extends FretboardView {
 
         // draw the guitar strings
         for(int i = 0; i < numStrings; i++){
-            canvas.drawLine(verticalFretboardPadding, horizontalFretboardPadding + i * stringBtwnDist,
-                            w-verticalFretboardPadding, horizontalFretboardPadding + i * stringBtwnDist,
+            canvas.drawLine(longFretboardPadding, wideFretboardPadding + i * stringBtwnDist,
+                            w- longFretboardPadding, wideFretboardPadding + i * stringBtwnDist,
                             fretboardPaint);
         }
 
@@ -42,34 +38,31 @@ public class FretboardHorizontalView extends FretboardView {
         } else {
             fretboardPaint.setStrokeWidth(fretThickness);
         }
-        canvas.drawLine(verticalFretboardPadding, horizontalFretboardPadding - (stringThickness/2f),
-                        verticalFretboardPadding, horizontalFretboardPadding + (stringThickness/2f) + fretboardWidth, fretboardPaint);
+        canvas.drawLine(longFretboardPadding, wideFretboardPadding - (stringThickness/2f),
+                longFretboardPadding, wideFretboardPadding + (stringThickness/2f) + fretboardWidth, fretboardPaint);
 
         //draw the frets
         fretboardPaint.setStrokeWidth(fretThickness);
-        for(int i = 0; i < fretRatios.length; i++){
+        for(int i = 0; i < midFretRatios.length; i++){
             float noteRadius = getResources().getDimensionPixelSize(R.dimen.note_radius);
-            canvas.drawText((i+startFret)+"", (float)(midFretRatios[i] * fretboardHeight + verticalFretboardPadding),
-                            fretboardWidth + horizontalFretboardPadding + noteRadius*2 + textOffset, fretNumberPaint);
-            canvas.drawLine((float)(fretRatios[i] * fretboardHeight + verticalFretboardPadding),
-                            horizontalFretboardPadding - (stringThickness/2f),
-                            (float)(fretRatios[i] * fretboardHeight + verticalFretboardPadding),
-                            horizontalFretboardPadding + fretboardWidth + (stringThickness/2f),fretboardPaint);
+            canvas.drawText((i+startFret)+"", (float)(midFretRatios[i] * fretboardLength + longFretboardPadding),
+                            fretboardWidth + wideFretboardPadding + noteRadius*2 + textOffset, fretNumberPaint);
+            canvas.drawLine((float)(fretRatios[i] * fretboardLength + longFretboardPadding),
+                            wideFretboardPadding - (stringThickness/2f),
+                            (float)(fretRatios[i] * fretboardLength + longFretboardPadding),
+                            wideFretboardPadding + fretboardWidth + (stringThickness/2f),fretboardPaint);
         }
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        this.stringThickness = h/displayConstants.STRING_THICKNESS_RATIO;
-        this.fretThickness = w/displayConstants.FRET_THICKNESS_RATIO;
-        this.verticalFretboardPadding = w/displayConstants.TOP_BOTTOM_PADDING_RATIO; // proportion of fretboard height
-        this.fretboardHeight = w - 2 * verticalFretboardPadding;
-        this.fretboardWidth = w/displayConstants.FRETBOARD_WIDTH_RATIO;
-        if(fretboardWidth * displayConstants.MAX_FRETBOARD_WIDTH_RATIO > h){
-            fretboardWidth = h/displayConstants.MAX_FRETBOARD_WIDTH_RATIO;
-        }
-        this.horizontalFretboardPadding = (h - fretboardWidth)/2f;
+        this.stringThickness = h/ Dimens.STRING_THICKNESS_RATIO;
+        this.fretThickness = Dimens.calcFretThickness(w);
+        this.longFretboardPadding = Dimens.calcLongFretboardPadding(w); // proportion of fretboard height
+        this.fretboardLength = Dimens.calcFretboardLength(w);
+        this.fretboardWidth = Dimens.calcFretboardWidth(h, w);
+        this.wideFretboardPadding = (h - fretboardWidth)/2f;
         if(numStrings-1 == 0){
             this.stringBtwnDist = -1;
         } else {

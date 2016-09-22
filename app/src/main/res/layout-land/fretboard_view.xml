@@ -5,6 +5,10 @@
         android:id="@+id/fretboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <sstudio.enchord.views.horizontal.CapoHorizontalView
+        android:id="@+id/capo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <sstudio.enchord.views.horizontal.NoteBoardHorizontalView
         android:id="@+id/note_board"
         android:layout_width="match_parent"
